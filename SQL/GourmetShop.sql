@@ -1,5 +1,6 @@
 ﻿USE master
 DROP DATABASE GourmetShop;
+GO
 
 CREATE DATABASE GourmetShop
 GO
@@ -1619,7 +1620,7 @@ INSERT INTO [Supplier] ([Id],[CompanyName],[ContactName],[City],[Country],[Phone
 INSERT INTO [Supplier] ([Id],[CompanyName],[ContactName],[City],[Country],[Phone],[Fax])VALUES(29,'Forêts d''érables','Chantal Goulet','Ste-Hyacinthe','Canada','(514) 555-2955','(514) 555-2921')
 SET IDENTITY_INSERT Supplier OFF
 
-SET IDENTITY_INSERT Categories ON
+SET IDENTITY_INSERT Categories OFF
 INSERT INTO Categories (Name) VALUES 
 ('Beverages'),
 ('Food Additives'),
@@ -1627,9 +1628,8 @@ INSERT INTO Categories (Name) VALUES
 ('Bakery'),
 ('Meats'),
 ('Regional Specialty');  
-SET IDENTITY_INSERT Subcategory OFF
 
-SET IDENTITY_INSERT Subcategories ON
+SET IDENTITY_INSERT Subcategories OFF
 INSERT INTO Subcategories (Name, CategoryId) VALUES 
 ('Non-Alcoholic Beverages', 1),
 ('Alcoholic Beverages', 1),
@@ -1648,7 +1648,6 @@ INSERT INTO Subcategories (Name, CategoryId) VALUES
 ('French Specialties', 6),
 ('Nordic Specialties', 6),
 ('Vegetarian & Vegan', null);  
-SET IDENTITY_INSERT Subcategory OFF
 
 SET IDENTITY_INSERT Product ON
 INSERT INTO [Product] ([Id],[ProductName],[SupplierId],[UnitPrice],[Package],[IsDiscontinued],[SubcategoryId])VALUES(1,'Chai',1,18.00,'10 boxes x 20 bags',0, 1)
