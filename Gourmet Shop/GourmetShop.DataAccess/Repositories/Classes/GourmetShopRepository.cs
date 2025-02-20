@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GourmetShop.DataAccess.Data;
+using System;
 using System.Collections.Generic;
 
 namespace GourmetShop.DataAccess.Repositories
@@ -9,9 +10,16 @@ namespace GourmetShop.DataAccess.Repositories
     {
         protected readonly string _connectionString;
 
+        protected readonly GourmetShopDbContext _context;
+
         public GourmetShopRepository(string connectionString)
         {
             _connectionString = connectionString;
+        }
+
+        public GourmetShopRepository(GourmetShopDbContext context)
+        {
+            _context = context;
         }
     }
 }

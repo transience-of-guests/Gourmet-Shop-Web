@@ -9,168 +9,53 @@ using System.Threading.Tasks;
 using GourmetShop.DataAccess.Models;
 using System.Data.Common;
 using System.Xml.Linq;
+using GourmetShop.DataAccess.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace GourmetShop.DataAccess.Repositories
 {
-    public class ProductRepository : GourmetShopRepository, IProductRepository_CRUD
+    public class ProductRepository : GourmetShopRepository, IProductRepository
     {
         public ProductRepository(string connectionString) : base(connectionString)
         {
         }
 
-        public void Add(Product entity)
+        public ProductRepository(GourmetShopDbContext context) : base(context)
         {
-            try
-            {
-                using (var conn = new SqlConnection(_connectionString))
-                using (var command = new SqlCommand("AddProduct", conn)
-                {
-                    CommandType = CommandType.StoredProcedure
-                })
-                {
-                    command.Parameters.Add(new SqlParameter("@ProductName", entity.ProductName));
-                    command.Parameters.Add(new SqlParameter("@SupplierId", entity.SupplierId));
-                    command.Parameters.Add(new SqlParameter("@UnitPrice", entity.UnitPrice));
-                    command.Parameters.Add(new SqlParameter("@Package", entity.Package));
-                    command.Parameters.Add(new SqlParameter("@IsDiscontinued", (entity.IsDiscontinued) ? 1 : 0));
-
-                    conn.Open();
-                    command.ExecuteNonQuery();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
         }
 
-        // TO-BE COMPLETED
-        public void Delete(int id)
+        public async Task<IEnumerable<Product>> GetAllAsync()
         {
-            try
-            {
-                using (var conn = new SqlConnection(_connectionString))
-                using (var command = new SqlCommand("DeleteProduct", conn)
-                {
-                    CommandType = CommandType.StoredProcedure
-                })
-                {
-                    command.Parameters.Add(new SqlParameter("@ProductId", id));
-
-                    conn.Open();
-                    command.ExecuteNonQuery();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            return await _context.Products
+                .Include(p => p.Subcategory) // Make sure to eagerly load the subcategories and suppliers
+                .Include(p => p.Supplier)
+                .ToListAsync();
         }
 
-        public IEnumerable<Product> GetAll()
+        public async Task<Product> GetAsync(int id)
         {
-            List<Product> products = new List<Product>();
-
-            try
-            {
-                using (var conn = new SqlConnection(_connectionString))
-                using (var command = new SqlCommand("GetProducts", conn)
-                {
-                    CommandType = CommandType.StoredProcedure
-                })
-                {
-                    conn.Open();
-
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            Product product = new Product();
-
-                            product.Id = reader.GetInt32(reader.GetOrdinal("Id"));
-                            product.ProductName = reader.GetString(reader.GetOrdinal("ProductName"));
-                            product.SupplierId = reader.GetInt32(reader.GetOrdinal("SupplierId"));
-                            product.UnitPrice = reader.IsDBNull(reader.GetOrdinal("UnitPrice")) ? (decimal?)null : reader.GetDecimal(reader.GetOrdinal("UnitPrice"));
-                            product.Package = reader.IsDBNull(reader.GetOrdinal("Package")) ? null : reader.GetString(reader.GetOrdinal("Package"));
-                            product.IsDiscontinued = reader.GetBoolean(reader.GetOrdinal("IsDiscontinued"));
-
-                            // https://stackoverflow.com/questions/8370927/how-do-i-loop-through-rows-with-a-data-reader-in-c
-                            products.Add(product);
-                        }
-                    }
-                }
-
-                return products;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            return await _context.Products.FindAsync(id);
         }
 
-        // TO-DO: 
-        public Product GetById(int id)
+        public async Task AddAsync(Product product)
         {
-            try
-            {
-                using (var conn = new SqlConnection(_connectionString))
-                using (var command = new SqlCommand("GetProductById", conn)
-                {
-                    CommandType = CommandType.StoredProcedure
-                })
-                {
-                    command.Parameters.Add(new SqlParameter("@ProductId", id));
-
-                    Product product = new Product();
-
-                    conn.Open();
-
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            product.Id = reader.GetInt32(reader.GetOrdinal("Id"));
-                            product.ProductName = reader.GetString(reader.GetOrdinal("ProductName"));
-                            product.SupplierId = reader.GetInt32(reader.GetOrdinal("SupplierId"));
-                            product.UnitPrice = reader.IsDBNull(reader.GetOrdinal("UnitPrice")) ? (decimal?)null : reader.GetDecimal(reader.GetOrdinal("UnitPrice"));
-                            product.Package = reader.IsDBNull(reader.GetOrdinal("Package")) ? null : reader.GetString(reader.GetOrdinal("Package"));
-                            product.IsDiscontinued = reader.GetBoolean(reader.GetOrdinal("IsDiscontinued"));
-                        }
-
-                        return product;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            _context.Products.Add(product);
+            await _context.SaveChangesAsync();
         }
 
-        public void Update(Product entity)
+        public async Task UpdateAsync(Product product)
         {
-            try
-            {
-                using (var conn = new SqlConnection(_connectionString))
-                using (var command = new SqlCommand("UpdateProduct", conn)
-                {
-                    CommandType = CommandType.StoredProcedure
-                })
-                {
-                    command.Parameters.Add(new SqlParameter("@ProductId", entity.Id));
-                    command.Parameters.Add(new SqlParameter("@ProductName", entity.ProductName));
-                    command.Parameters.Add(new SqlParameter("@SupplierId", entity.SupplierId));
-                    command.Parameters.Add(new SqlParameter("@UnitPrice", entity.UnitPrice));
-                    command.Parameters.Add(new SqlParameter("@Package", entity.Package));
-                    command.Parameters.Add(new SqlParameter("@IsDiscontinued", (entity.IsDiscontinued) ? 1 : 0));
+            _context.Entry(product).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
 
-                    conn.Open();
-                    command.ExecuteNonQuery();
-                }
-            }
-            catch (Exception ex)
+        public async Task DeleteAsync(int id)
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product != null)
             {
-                throw;
+                _context.Products.Remove(product);
+                await _context.SaveChangesAsync();
             }
         }
 
