@@ -28,59 +28,90 @@ namespace GourmetShop.WebApp.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            var book = await _productRepository.GetAsync(id);
-            if (book == null)
+            var product = await _productRepository.GetAsync(id);
+            if (product == null)
             {
                 return NotFound();
             }
-            return View(book);
+            return View(product);
         }
 
-        public IActionResult Create()
+        [HttpGet]
+        public async Task<IActionResult> Create()
         {
+            // Modify to use the repository, not the model, need to load the potential subcategories and suppliers
+            ViewBag.SubcategoryId = new SelectList(await _productRepository.GetSelectableSubcategories(), "Id", "Name");
+            ViewBag.SupplierId = new SelectList(await _productRepository.GetSelectableSuppliers(), "Id", "CompanyName");
+
             return View();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create(Product book)
+        [HttpPost, ActionName("Create")]
+        public async Task<IActionResult> Create(Product product)
         {
-            if (ModelState.IsValid)
+            await _productRepository.AddAsync(product);
+            return RedirectToAction(nameof(Index));
+
+            // FIXME: Validation will never work because ModelState is always invalid, need to use ViewModels?
+            /*if (ModelState.IsValid)
             {
-                await _productRepository.AddAsync(book);
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    await _productRepository.AddAsync(product);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                }
             }
-            return View(book);
+
+            ViewBag.SubcategoryId = new SelectList(await _productRepository.GetSelectableSubcategories(), "Id", "Name");
+            ViewBag.SupplierId = new SelectList(await _productRepository.GetSelectableSuppliers(), "Id", "CompanyName");
+
+            return View(product);*/
         }
 
         public async Task<IActionResult> Edit(int id)
         {
-            var book = await _productRepository.GetAsync(id);
-            if (book == null)
+            var product = await _productRepository.GetAsync(id);
+            if (product == null)
             {
                 return NotFound();
             }
-            return View(book);
+
+            ViewBag.SubcategoryId = new SelectList(await _productRepository.GetSelectableSubcategories(), "Id", "Name");
+            ViewBag.SupplierId = new SelectList(await _productRepository.GetSelectableSuppliers(), "Id", "CompanyName");
+
+            return View(product);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Product book)
+        public async Task<IActionResult> Edit(Product product)
         {
-            if (ModelState.IsValid)
+            await _productRepository.UpdateAsync(product);
+            return RedirectToAction(nameof(Index));
+
+            // FIXME: Validation will never work because ModelState is always invalid, need to use ViewModels?
+            /*if (ModelState.IsValid)
             {
-                await _productRepository.UpdateAsync(book);
+                await _productRepository.UpdateAsync(product);
                 return RedirectToAction(nameof(Index));
             }
-            return View(book);
+
+            ViewBag.SubcategoryId = new SelectList(await _productRepository.GetSelectableSubcategories(), "Id", "Name");
+            ViewBag.SupplierId = new SelectList(await _productRepository.GetSelectableSuppliers(), "Id", "CompanyName");
+            return View(product);*/
         }
 
         public async Task<IActionResult> Delete(int id)
         {
-            var book = await _productRepository.GetAsync(id);
-            if (book == null)
+            var product = await _productRepository.GetAsync(id);
+            if (product == null)
             {
                 return NotFound();
             }
-            return View(book);
+            return View(product);
         }
 
         [HttpPost, ActionName("Delete")]

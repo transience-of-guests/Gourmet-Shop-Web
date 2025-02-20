@@ -34,7 +34,11 @@ namespace GourmetShop.DataAccess.Repositories
 
         public async Task<Product> GetAsync(int id)
         {
-            return await _context.Products.FindAsync(id);
+            // Going to be slower than using FindAsync, but we need to include the subcategory and supplier because they aren't loaded
+            return await _context.Products
+                .Include(p => p.Subcategory)
+                .Include(p=>p.Supplier)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task AddAsync(Product product)
@@ -57,6 +61,21 @@ namespace GourmetShop.DataAccess.Repositories
                 _context.Products.Remove(product);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<IEnumerable<Supplier>> GetSelectableSuppliers()
+        {
+            SupplierRepository supplierRepository = new SupplierRepository(_context);
+            return await supplierRepository.GetAllAsync();
+        }
+
+        // TODO: Make a subcategory repository and use it here
+        public async Task <IEnumerable<Subcategory>> GetSelectableSubcategories()
+        {
+            /*SubcategoryRepository subcategoryRepository = new SubcategoryRepository(_context);
+            return await subcategoryRepository.GetAllAsync();*/
+
+            return await _context.Subcategories.ToListAsync();
         }
 
         //CHECKME ADDED
