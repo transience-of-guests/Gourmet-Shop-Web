@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace GourmetShop.DataAccess.Repositories
 {
@@ -18,74 +19,28 @@ namespace GourmetShop.DataAccess.Repositories
         {
         }
 
-        public Admin GetByUserId(int userId)
+        public async Task<Admin> GetByUserIdAsync(int userId)
         {
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(_connectionString))
-                using (SqlCommand cmd = new SqlCommand("GetAdminByUserId", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@UserId", userId);
-
-                    conn.Open();
-                    using (SqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        Admin admin = new Admin();
-
-                        if (reader.Read())
-                        {
-                            admin.Id = reader.GetInt32(reader.GetOrdinal("Id"));
-                            admin.UserId = reader.GetInt32(reader.GetOrdinal("UserId"));
-                            admin.Email = reader.GetString(reader.GetOrdinal("Email"));
-                        }
-
-                        return admin;
-                    }
-                }
-            }
-            catch (SqlException ex) // Catches SQL-specific errors
-            {
-                throw; // Rethrow the exception to the calling code
-            }
-            catch (Exception ex) // Catches any other unexpected errors
-            {
-                throw; // Rethrow the exception to the calling code
-            }
+            
+                return await _context.Admins
+                .Where(a => a.UserId == userId)
+                .FirstOrDefaultAsync();
+           
         }
 
-        public (int TotalUnitsSold, decimal TotalSalesAmount) GetProductSales(int productId)
+        public async Task<(int TotalUnitsSold, decimal TotalSalesAmount)> GetProductSalesAync(int productId)
         {
-            try
+            var result = await _context.OrderItems
+            .Where(od => od.ProductId == productId)
+            .GroupBy(od => od.ProductId)
+            .Select(g => new
             {
-                using (SqlConnection conn = new SqlConnection(_connectionString))
-                using (SqlCommand cmd = new SqlCommand("GetProductSales", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@ProductID", productId);
+                TotalUnitsSold = g.Sum(od => od.Quantity),
+                TotalSalesAmount = g.Sum(od => od.Quantity * od.UnitPrice)
+            })
+            .FirstOrDefaultAsync();
 
-                    conn.Open();
-                    using (SqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            int totalUnitsSold = reader.GetInt32(reader.GetOrdinal("TotalUnitsSold"));
-                            decimal totalSalesAmount = reader.GetDecimal(reader.GetOrdinal("TotalSalesAmount"));
-                            return (totalUnitsSold, totalSalesAmount);
-                        }
-                    }
-                }
-            }
-            catch (SqlException ex) // Catches SQL-specific errors
-            {
-                Console.WriteLine($"Database error: {ex.Message}");
-            }
-            catch (Exception ex) // Catches any other unexpected errors
-            {
-                Console.WriteLine($"An error occurred: {ex.Message}");
-            }
-
-            return (0, 0); // Return default values in case of failure
+            return result != null ? (result.TotalUnitsSold, result.TotalSalesAmount) : (0, 0);
         }
 
     }

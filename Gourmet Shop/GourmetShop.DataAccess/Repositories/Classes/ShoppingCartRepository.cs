@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GourmetShop.DataAccess.Repositories.Interfaces.CRUD_Subinterfaces;
 using GourmetShop.DataAccess.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace GourmetShop.DataAccess.Repositories
 {
@@ -17,189 +18,80 @@ namespace GourmetShop.DataAccess.Repositories
         public ShoppingCartRepository(string connectionString) : base(connectionString)
         {
         }
-
-
-        public void AddToCart(int customerId, int productId, int quantity)
+        public async Task AddToCartAsync(int customerId, int productId, int quantity)
         {
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(_connectionString))
-                using (SqlCommand cmd = new SqlCommand("AddToCart", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@CustomerID", customerId);
-                    cmd.Parameters.AddWithValue("@ProductID", productId);
-                    cmd.Parameters.AddWithValue("@Quantity", quantity);
-
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                }
-
-              
-            }
-            catch (SqlException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            await _context.Database.ExecuteSqlRawAsync(
+                "EXEC AddToCart @CustomerId, @ProductId, @Quantity",
+                new SqlParameter("@CustomerId", customerId),
+                new SqlParameter("@ProductId", productId),
+                new SqlParameter("@Quantity", quantity)
+                );
         }
 
-        public void UpdateCartItemQuantity(int cartId, int productId, int newQuantity)
+        public async Task UpdateCartItemQuantity(int cartId, int productId, int newQuantity)
         {
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(_connectionString))
-                using (SqlCommand cmd = new SqlCommand("UpdateCartItemQuantity", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@CartID", cartId);
-                    cmd.Parameters.AddWithValue("@ProductID", productId);
-                    cmd.Parameters.AddWithValue("@NewQuantity", newQuantity);
+            await _context.Database.ExecuteSqlRawAsync(
+                "EXEC UpdateCartItemQuanity @CartId, @ProductId, @NewQuantity",
+                new SqlParameter("@CartId", cartId),
+                new SqlParameter("@ProductId", productId),
+                new SqlParameter("@NewQuantity", newQuantity)
 
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                }
-                // MessageBox.Show("Quantity updated successfully.", "Update Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                // MessageBox.Show($"Error: {ex.Message}", "Update Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+                );
         }
 
-        public void RemoveFromCart(int cartId, int productId)
+        public async Task RemoveFromCart(int cartId, int productId)
         {
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(_connectionString))
-                using (SqlCommand cmd = new SqlCommand("RemoveFromCart", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@CartID", cartId);
-                    cmd.Parameters.AddWithValue("@ProductID", productId);
-
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                }
-            }
-            catch (SqlException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            await _context.Database.ExecuteSqlRawAsync(
+                "EXEC RemoveFromCart @CartId, @ProductId",
+                new SqlParameter("@CartId", cartId),
+                new SqlParameter("@ProductId", productId)
+                );
         }
 
-        public void ClearCart(int cartId)
+        public async Task ClearCart(int cartId)
         {
-            using (SqlConnection conn = new SqlConnection(_connectionString))
-            using (SqlCommand cmd = new SqlCommand("ClearCart", conn))
-            {
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@CartID", cartId);
-
-                conn.Open();
-                cmd.ExecuteNonQuery();
-            }
+            await _context.Database.ExecuteSqlRawAsync(
+                "EXEC ClearCart @CartId",
+                new SqlParameter ("@CartId", cartId)
+                );
         }
 
-        public DataTable ViewCart(int cartId)
+       public async Task <List<ShoppingCartDetail>> ViewCartASync(int cartId)
         {
+            var cartItems = await _context.ShoppingCartDetails
+             .FromSqlRaw("EXEC ViewCart @CartID", new SqlParameter("@CartID", cartId))
+             .ToListAsync();
 
-            
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(_connectionString))
-                using (SqlCommand cmd = new SqlCommand("ViewCart", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@CartID", cartId);
-
-                    DataTable dt = new DataTable();
-                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-                    adapter.Fill(dt);
-
-                    return dt;
-                }
-            }
-            catch (SqlException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-
-            // Return to prevent null reference exceptions
-            return new DataTable();
-
-
-
-
+            return cartItems;
         }
 
-        
-
-        public void PlaceOrder(int customerId)
+        public async Task<bool> PlaceOrderAync(int customerId)
         {
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(_connectionString))
-                {
-                    using (SqlCommand cmd = new SqlCommand("PlaceOrder", conn))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("@CustomerId", customerId);
+            var result = await _context.Orders
+                 .FromSqlRaw("EXEC PlaceOrder @CustomerId", new SqlParameter("@CustomerId", customerId))
+            .ToListAsync();
 
-                        conn.Open();
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            if (!reader.HasRows)
-                            {
-                                throw new Exception("Order placement failed. No order was created.");
-                            }
-                        }
-                    }
-                }
+            if (result == null || result.Count == 0)
+            {
+                throw new Exception("Order placement failed. No order was created.");
+                
+            }
 
-               
-            }
-            catch (SqlException ex)
-            {
-                // Handle SQL-related errors
-                throw;
-                // MessageBox.Show($"Database error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (Exception ex)
-            {
-                // Handle general errors
-                throw;
-                // MessageBox.Show($"An error occurred while placing the order: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            return true;
         }
 
 
+        public async Task<int> GetCartIdForCustomerAsync(int customerId)
+        {
+            var cartId = await _context.ShoppingCarts
+                .Where(c => c.Id == customerId)
+                .Select(c => c.Id)
+                .FirstOrDefaultAsync();
 
+            return cartId;
+        }
 
        
-
-        public int GetCartIdForCustomer(int customerId)
-        {
-            using (SqlConnection conn = new SqlConnection(_connectionString))
-            using (SqlCommand cmd = new SqlCommand("SELECT Id FROM ShoppingCart WHERE CustomerId = @CustomerId", conn))
-            {
-                cmd.Parameters.AddWithValue("@CustomerId", customerId);
-                conn.Open();
-                var result = cmd.ExecuteScalar();
-                return result != null ? Convert.ToInt32(result) : -1;
-            }
-        }
 
 
 

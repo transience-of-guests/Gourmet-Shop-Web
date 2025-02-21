@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace GourmetShop.DataAccess.Repositories
 {
@@ -14,41 +15,14 @@ namespace GourmetShop.DataAccess.Repositories
         public CustomerRepository(string connectionString) : base(connectionString)
         {
         }
-
-        // CHECKME
-        public Customer GetByUserId(int userId)
+        public async Task<Customer> GetByUserIdAsync(int userId)
         {
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(_connectionString))
-                using (SqlCommand cmd = new SqlCommand("GetCustomerByUserId", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@UserId", userId);
 
-                    conn.Open();
-                    using (SqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        Customer customer = new Customer();
+            return await _context.Customers
+            .Where(c => c.UserId == userId)
+            .FirstOrDefaultAsync();
 
-                        if (reader.Read())
-                        {
-                            customer.Id = reader.GetInt32(reader.GetOrdinal("Id"));
-                            customer.UserId = reader.GetInt32(reader.GetOrdinal("UserId"));
-                        }
-
-                        return customer;
-                    }
-                }
-            }
-            catch (SqlException ex) // Catches SQL-specific errors
-            {
-                throw; // Rethrow the exception to the calling code
-            }
-            catch (Exception ex) // Catches any other unexpected errors
-            {
-                throw; // Rethrow the exception to the calling code
-            }
         }
+      
     }
 }

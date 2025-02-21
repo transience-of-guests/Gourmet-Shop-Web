@@ -10,6 +10,6 @@ namespace GourmetShop.DataAccess.Repositories
     //CHECKME
     public interface IAdmin : IGourmetShopRepository<Admin>, IUserRepository<Admin>
     {
-        (int TotalUnitsSold, decimal TotalSalesAmount) GetProductSales(int productId);
+        Task<(int TotalUnitsSold, decimal TotalSalesAmount)> GetProductSalesAync(int productId);
     }
 }
