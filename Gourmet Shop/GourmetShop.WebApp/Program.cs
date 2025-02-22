@@ -1,5 +1,6 @@
 using GourmetShop.DataAccess.Data;
 using GourmetShop.DataAccess.Repositories;
+using GourmetShop.DataAccess.Repositories.Interfaces.CRUD_Subinterfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,9 +11,13 @@ builder.Services.AddDbContext<GourmetShopDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // TODO: Add the necessary controllers and DI here
+//?? We have a user repository and an authentication repository. Wouldn't that be the same controller
+//that would redirect them to their respective pages?
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
-
-
+builder.Services.AddScoped<IAdmin, AdminRepository>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
+builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
 var app = builder.Build();
 
 
