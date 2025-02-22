@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using GourmetShop.DataAccess.Data;
 
 namespace GourmetShop.DataAccess.Repositories
 {
@@ -15,7 +16,7 @@ namespace GourmetShop.DataAccess.Repositories
     public class AdminRepository : GourmetShopRepository, IAdmin
     {
 
-        public AdminRepository(string connectionString) : base(connectionString)
+        public AdminRepository(GourmetShopDbContext context) : base(context)
         {
         }
 

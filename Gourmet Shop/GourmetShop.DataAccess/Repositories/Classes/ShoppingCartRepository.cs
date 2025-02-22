@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using GourmetShop.DataAccess.Repositories.Interfaces.CRUD_Subinterfaces;
 using GourmetShop.DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
+using GourmetShop.DataAccess.Data;
 
 namespace GourmetShop.DataAccess.Repositories
 {
@@ -16,6 +17,10 @@ namespace GourmetShop.DataAccess.Repositories
     {
       
         public ShoppingCartRepository(string connectionString) : base(connectionString)
+        {
+        }
+
+        public ShoppingCartRepository(GourmetShopDbContext context) : base(context)
         {
         }
         public async Task AddToCartAsync(int customerId, int productId, int quantity)

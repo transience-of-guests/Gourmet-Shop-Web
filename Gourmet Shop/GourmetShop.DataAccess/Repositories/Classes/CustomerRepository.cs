@@ -7,12 +7,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using GourmetShop.DataAccess.Data;
 
 namespace GourmetShop.DataAccess.Repositories
 {
     public class CustomerRepository : GourmetShopRepository, ICustomerRepository
     {
         public CustomerRepository(string connectionString) : base(connectionString)
+        {
+        }
+
+        public CustomerRepository(GourmetShopDbContext context) : base(context)
         {
         }
         public async Task<Customer> GetByUserIdAsync(int userId)

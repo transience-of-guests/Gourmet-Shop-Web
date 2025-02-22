@@ -7,12 +7,17 @@ using System.Text;
 using System.Threading.Tasks;
 using GourmetShop.DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
+using GourmetShop.DataAccess.Data;
 
 namespace GourmetShop.DataAccess.Repositories
 {
     public class UserRepository: GourmetShopRepository, IUserRepository<User>
     {
         public UserRepository(string connectionString) : base(connectionString)
+        {
+        }
+
+        public UserRepository(GourmetShopDbContext context) : base(context)
         {
         }
 
