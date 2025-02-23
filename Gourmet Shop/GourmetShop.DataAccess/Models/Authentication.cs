@@ -2,24 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace GourmetShop.DataAccess.Models;
 
-[Keyless]
 [Table("Authentication")]
-public partial class Authentication
+public partial class Authentication : IdentityUser
 {
-    public int Id { get; set; }
-
-    public int UserId { get; set; }
-
-    [StringLength(320)]
-    public string Username { get; set; } = null!;
-
-    [StringLength(255)]
-    public string Password { get; set; } = null!;
-
-    [ForeignKey("UserId")]
-    public virtual User User { get; set; } = null!;
+    [InverseProperty("Authentication")]
+    public virtual required UserInfo UserInfo { get; set; }
 }

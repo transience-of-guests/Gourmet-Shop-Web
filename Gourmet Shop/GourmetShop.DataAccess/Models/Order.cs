@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace GourmetShop.DataAccess.Models;
 
 [Table("Order")]
-[Microsoft.EntityFrameworkCore.Index("CustomerId", Name = "IndexOrderCustomerId")]
+[Microsoft.EntityFrameworkCore.Index("UserId", Name = "IndexOrderCustomerId")]
 [Microsoft.EntityFrameworkCore.Index("OrderDate", Name = "IndexOrderOrderDate")]
 public partial class Order
 {
@@ -20,14 +20,14 @@ public partial class Order
     [StringLength(10)]
     public string? OrderNumber { get; set; }
 
-    public int CustomerId { get; set; }
+    public int UserId { get; set; }
 
     [Column(TypeName = "decimal(12, 2)")]
     public decimal? TotalAmount { get; set; }
 
-    [ForeignKey("CustomerId")]
+    [ForeignKey("UserId")]
     [InverseProperty("Orders")]
-    public virtual Customer Customer { get; set; } = null!;
+    public virtual UserInfo UserInfo { get; set; } = null!;
 
     [InverseProperty("Order")]
     public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();

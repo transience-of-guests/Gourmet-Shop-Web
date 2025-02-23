@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using GourmetShop.DataAccess.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace GourmetShop.DataAccess.Data;
 
-public partial class GourmetShopDbContext : DbContext
+public partial class GourmetShopDbContext : IdentityDbContext<Authentication>
 {
     public GourmetShopDbContext()
     {
@@ -16,13 +21,13 @@ public partial class GourmetShopDbContext : DbContext
     {
     }
 
-    public virtual DbSet<Admin> Admins { get; set; }
+    // public virtual DbSet<Admin> Admins { get; set; }
 
     public virtual DbSet<Authentication> Authentications { get; set; }
 
     public virtual DbSet<Category> Categories { get; set; }
 
-    public virtual DbSet<Customer> Customers { get; set; }
+    // public virtual DbSet<Customer> Customers { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
     
@@ -30,7 +35,7 @@ public partial class GourmetShopDbContext : DbContext
 
     public virtual DbSet<Product> Products { get; set; }
 
-    public virtual DbSet<Role> Roles { get; set; }
+    // public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<ShoppingCart> ShoppingCarts { get; set; }
 
@@ -40,7 +45,7 @@ public partial class GourmetShopDbContext : DbContext
 
     public virtual DbSet<Supplier> Suppliers { get; set; }
 
-    public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<UserInfo> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -48,32 +53,16 @@ public partial class GourmetShopDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Admin>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK_ADMIN");
-
-            entity.HasOne(d => d.User).WithMany(p => p.Admins).HasConstraintName("FK_ADMIN_REFERENCE_USER");
-        });
+        base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<Authentication>(entity =>
         {
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-            entity.HasOne(d => d.User).WithMany()
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_AUTH_REFERENCE_USER");
         });
 
         modelBuilder.Entity<Category>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Categori__3214EC078BCE0C25");
-        });
-
-        modelBuilder.Entity<Customer>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK_CUSTOMER");
-
-            entity.HasOne(d => d.User).WithMany(p => p.Customers).HasConstraintName("FK_CUSTOMER_REFERENCE_USER");
         });
 
         modelBuilder.Entity<Order>(entity =>
@@ -83,9 +72,9 @@ public partial class GourmetShopDbContext : DbContext
             entity.Property(e => e.OrderDate).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.TotalAmount).HasDefaultValue(0m);
 
-            entity.HasOne(d => d.Customer).WithMany(p => p.Orders)
+            entity.HasOne(d => d.UserInfo).WithMany(p => p.Orders)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ORDER_REFERENCE_CUSTOMER");
+                .HasConstraintName("FK_ORDER_REFERENCE_USER");
         });
 
         modelBuilder.Entity<OrderItem>(entity =>
@@ -117,18 +106,13 @@ public partial class GourmetShopDbContext : DbContext
                 .HasConstraintName("FK_PRODUCT_REFERENCE_SUPPLIER");
         });
 
-        modelBuilder.Entity<Role>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Role__3214EC07D4EB88F4");
-        });
-
         modelBuilder.Entity<ShoppingCart>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Shopping__3214EC07CBA23AB8");
 
             entity.Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
 
-            entity.HasOne(d => d.Customer).WithMany(p => p.ShoppingCarts).HasConstraintName("FK_SHOPPING_CART_REFERENCE_CUSTOMER");
+            entity.HasOne(d => d.UserInfo).WithMany(p => p.ShoppingCarts).HasConstraintName("FK_SHOPPING_CART_REFERENCE_USER");
         });
 
         modelBuilder.Entity<ShoppingCartDetail>(entity =>
@@ -154,15 +138,22 @@ public partial class GourmetShopDbContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK_SUPPLIER");
         });
 
-        modelBuilder.Entity<User>(entity =>
+        // TODO: Rename to UserInfo
+        modelBuilder.Entity<UserInfo>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_USER");
 
-            entity.Property(e => e.RoleId).HasDefaultValue(1);
+            /*entity.Property(e => e.RoleId).HasDefaultValue(1);
 
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_USER_REFERENCE_ROLE");
+                .HasConstraintName("FK_USER_REFERENCE_ROLE");*/
+
+            entity.HasOne(d => d.Authentication)
+                .WithOne(a => a.UserInfo)
+                .HasForeignKey<UserInfo>(u => u.AuthenticationId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_USER_REFERENCE_AUTH");
         });
 
         OnModelCreatingPartial(modelBuilder);
