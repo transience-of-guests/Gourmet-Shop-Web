@@ -34,11 +34,12 @@ namespace GourmetShop.DataAccess.Repositories
 
         public async Task<Product> GetAsync(int id)
         {
-            // Going to be slower than using FindAsync, but we need to include the subcategory and supplier because they aren't loaded
+            //Going to be slower than using FindAsync, but we need to include the subcategory and supplier because they aren't loaded
             return await _context.Products
                 .Include(p => p.Subcategory)
-                .Include(p=>p.Supplier)
+                .Include(p => p.Supplier)
                 .FirstOrDefaultAsync(p => p.Id == id);
+
         }
 
         public async Task AddAsync(Product product)
