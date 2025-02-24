@@ -52,9 +52,23 @@ namespace GourmetShop.DataAccess.Data
             }
         }
 
+        // TODO: Add phone numbers to the JSON file
         private List<Authentication> SeedAuthenticationData()
         {
-            throw new NotImplementedException();
+            var authentications = new List<Authentication>();
+
+            // The reason why we need this is because we're copying the JSON file to the output directory
+            string assemblyFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string jsonFilePath = Path.Combine(assemblyFolder, "Authentication.json");
+
+            // Modify this to grab the SeedData from the JSON file, it's in a separate project
+            using (StreamReader r = new StreamReader(jsonFilePath))
+            {
+                string json = r.ReadToEnd();
+                authentications = JsonConvert.DeserializeObject<List<Authentication>>(json);
+            }
+
+            return authentications;
         }
 
         public List<IdentityRole> SeedIdentityRoleData()
