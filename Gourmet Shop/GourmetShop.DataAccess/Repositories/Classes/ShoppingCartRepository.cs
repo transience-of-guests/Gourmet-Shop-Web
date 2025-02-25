@@ -25,62 +25,126 @@ namespace GourmetShop.DataAccess.Repositories
         }
         public async Task AddToCartAsync(int customerId, int productId, int quantity)
         {
-            await _context.Database.ExecuteSqlRawAsync(
-                "EXEC AddToCart @CustomerId, @ProductId, @Quantity",
-                new SqlParameter("@CustomerId", customerId),
-                new SqlParameter("@ProductId", productId),
-                new SqlParameter("@Quantity", quantity)
-                );
-        }
+            var cart = await _context.ShoppingCarts
+                .FirstOrDefaultAsync(c => c.UserId == customerId);
 
+            if (cart == null)
+            {
+                cart = new ShoppingCart
+                {
+                    UserId = customerId,
+                    CreatedDate = DateTime.Now
+                };
+                _context.ShoppingCarts.Add(cart);
+                await _context.SaveChangesAsync();
+            }
+
+            var cartItem = await _context.ShoppingCartDetails
+                .FirstOrDefaultAsync(c => c.CartId == cart.Id && c.ProductId == productId);
+
+            if (cartItem == null)
+            {
+                cartItem.Quantity += quantity;
+            }
+            else
+            {
+                cartItem = new ShoppingCartDetail
+                {
+                    CartId = cart.Id,
+                    ProductId = productId,
+                    Quantity = quantity,
+                    Price = (decimal)await _context.Products
+                        .Where(p => p.Id == productId)
+                        .Select(p => p.UnitPrice)
+                        .FirstOrDefaultAsync()
+                        
+                };
+                _context.ShoppingCartDetails.Add(cartItem);
+                await _context.SaveChangesAsync();
+            }
+        }
         public async Task UpdateCartItemQuantity(int cartId, int productId, int newQuantity)
         {
-            await _context.Database.ExecuteSqlRawAsync(
-                "EXEC UpdateCartItemQuanity @CartId, @ProductId, @NewQuantity",
-                new SqlParameter("@CartId", cartId),
-                new SqlParameter("@ProductId", productId),
-                new SqlParameter("@NewQuantity", newQuantity)
+            var cartItem = _context.ShoppingCartDetails
+                .FirstOrDefault(c => c.CartId == cartId && c.ProductId == productId);
 
-                );
+            if(cartItem != null)
+            {
+                cartItem.Quantity = newQuantity;
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task RemoveFromCart(int cartId, int productId)
         {
-            await _context.Database.ExecuteSqlRawAsync(
-                "EXEC RemoveFromCart @CartId, @ProductId",
-                new SqlParameter("@CartId", cartId),
-                new SqlParameter("@ProductId", productId)
-                );
+
+            var cartItem = await _context.ShoppingCartDetails
+                .FirstOrDefaultAsync(c => c.CartId == cartId && c.ProductId == productId);
+
+            if (cartItem != null)
+            {
+                _context.ShoppingCartDetails.Remove(cartItem);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task ClearCart(int cartId)
         {
-            await _context.Database.ExecuteSqlRawAsync(
-                "EXEC ClearCart @CartId",
-                new SqlParameter ("@CartId", cartId)
-                );
+            var cartItems = _context.ShoppingCartDetails
+                .Where(c => c.CartId == cartId);
+
+            if(await cartItems.AnyAsync())
+            {
+                _context.ShoppingCartDetails.RemoveRange(cartItems);
+                await _context.SaveChangesAsync();
+            }
+               
         }
 
        public async Task <List<ShoppingCartDetail>> ViewCartASync(int cartId)
         {
-            var cartItems = await _context.ShoppingCartDetails
-             .FromSqlRaw("EXEC ViewCart @CartID", new SqlParameter("@CartID", cartId))
-             .ToListAsync();
-
-            return cartItems;
+                return await _context.ShoppingCartDetails
+                .Where(c => c.CartId == cartId)
+                .Include(c =>c.Product).ToListAsync();
         }
 
         public async Task<bool> PlaceOrderAync(int customerId)
         {
-            var result = await _context.Orders
-                 .FromSqlRaw("EXEC PlaceOrder @CustomerId", new SqlParameter("@CustomerId", customerId))
-            .ToListAsync();
+            var cart = await _context.ShoppingCarts
+                .Include(c => c.ShoppingCartDetails)
+                .FirstOrDefaultAsync(c => c.UserId == customerId);
 
-            if (result == null || result.Count == 0)
+            if (cart == null)
             {
-                throw new Exception("Order placement failed. No order was created.");
-                
+                throw new Exception("Cart not found");
             }
+
+            decimal totalPrice = cart.ShoppingCartDetails.Sum(c => c.Price * c.Quantity); // FIXED!
+
+           
+            var order = new Order
+            {
+                UserId = customerId,
+                OrderDate = DateTime.UtcNow,
+                TotalAmount = totalPrice 
+            };
+
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
+
+            var orderItems = cart.ShoppingCartDetails.Select(cartItem => new OrderItem
+            {
+                OrderId = order.Id,
+                ProductId = cartItem.ProductId,
+                Quantity = cartItem.Quantity,
+                UnitPrice = cartItem.Price
+            }).ToList();
+
+            _context.OrderItems.AddRange(orderItems);
+            await _context.SaveChangesAsync();
+
+            _context.ShoppingCartDetails.RemoveRange(cart.ShoppingCartDetails);
+            await _context.SaveChangesAsync();
 
             return true;
         }

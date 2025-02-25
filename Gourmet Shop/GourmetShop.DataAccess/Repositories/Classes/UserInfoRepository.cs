@@ -21,16 +21,10 @@ namespace GourmetShop.DataAccess.Repositories
         {
         }
 
-        public async Task<bool> UserExistsAsync(string firstName, string lastName, string phone)
+        public async Task<bool> UserExistsAsync(string firstName, string lastName)
         {
-            var result = await _context.Users
-                .FromSqlRaw("EXEC CheckUserExists @FirstName, @LastName, @Phone",
-                    new SqlParameter("@FirstName", firstName),
-                    new SqlParameter("@LastName", lastName),
-                    new SqlParameter("@Phone", phone))
-                .FirstOrDefaultAsync();
-
-            return true;
+            return await _context.Users
+       .AnyAsync(u => u.FirstName == firstName && u.LastName == lastName);
         }
 
         public Task<IEnumerable<UserInfo>> GetAllAsync()
