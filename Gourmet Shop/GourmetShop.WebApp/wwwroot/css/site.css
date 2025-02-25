@@ -29,3 +29,64 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+.btn-brown {
+    background-color: #423f32; /* Brown color */
+    color: #f9f7f4; /* White text */
+    font-family: "Funnel Sans", serif;
+    font-weight: 300;
+}
+
+    .btn-brown:hover {
+        background-color: #5e3f28; /* Darker brown on hover */
+        color: #f9f7f4;
+    }
+
+.bg-light {
+    background-color: #f1ebe5; /* Light brown color */
+}
+#registerSubmit {
+    border-radius: 30px; /* Adjust the value to make the button more/less rounded */
+}
+
+.navbar {
+    /*margin-bottom: 0;*/ /* Removes any bottom margin */
+    /*padding-top: 0;*/ /* Removes any top padding */
+   /* padding-bottom: 0;*/ /* Removes any bottom padding */
+}
+
+.custom-container {
+    margin-top: -50px; /* Adjust this value to fine-tune the spacing */
+}
+
+.font-style {
+    font-family: "Chivo", serif;
+  /*  font-optical-sizing: auto;*/
+    font-weight: 100;
+    font-style: normal;
+}
+
+.Gourmet-Header-Font {
+    font-family: "Aboreto", serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #423f32;
+    /*font-family: "Butterfly Kids", serif;
+    font-weight: 400;
+    font-size: 40px;*/
+    /* font-style: normal;*/
+}
+
+.navbar-brand {
+    padding-top: 30px;  
+}
+
+.custom-link {
+    color: #423f32; /* Change this to your preferred color */
+    text-decoration: none; /* Removes the underline */
+}
+
+    .custom-link:hover {
+        color: #3A382C; /* Slightly darker shade for hover effect */
+        text-decoration: underline; /* Underline on hover for better UX */
+    }

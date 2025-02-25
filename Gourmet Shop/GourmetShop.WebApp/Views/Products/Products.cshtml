@@ -1,0 +1,221 @@
+﻿@using GourmetShop.DataAccess.Models
+
+
+@section Styles {
+    <style>
+        body {
+            background-color: #f9f7f4; /* Light brown color */
+        }
+    </style>
+}
+
+@model IEnumerable<Product>
+
+
+<div class="container mt-4">
+    <h3 class="text-center mb-4">Available Products</h3>
+    
+    <!-- Product List -->
+    <div class="row">
+        @foreach (var product in Model)  
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <!-- Product name in the center -->
+                        <h5 class="card-title">@product.ProductName</h5>
+                        <p class="card-text">Price: $@product.UnitPrice</p>
+                        
+                        <!-- Add to Cart button below the name -->
+                        <form method="post" action="@Url.Action("AddToCart", "ShoppingCart")">
+                            <input type="hidden" name="productId" value="@product.Id" />
+                            <button type="submit" class="btn btn-brown">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@* Used for hardcoded test  *@
+
+
+@* <div class="navbar">
+    <ul>
+        <li><a href="@Url.Action("Index", "Product")">All Products</a></li>
+        @foreach (var subcategory in Model.Subcategories)
+        {
+            <li>
+                <a href="@Url.Action("GetProductsBySubcategory", "Subcategory", new { subcategoryId = subcategory.Id })">
+                    @subcategory.Name
+                </a>
+            </li>
+        }
+    </ul>
+</div>
+
+<div class="products">
+    <h2>Available Products</h2>
+    @foreach (var product in Model.Products)
+    {
+        <div class="product-card">
+            <h3>@product.ProductName</h3>
+            <p>Price: $@product.UnitPrice</p>
+            <form method="post" action="@Url.Action("AddToCart", "ShoppingCart")">
+                <input type="hidden" name="productId" value="@product.Id" />
+                <button type="submit">Add to Cart</button>
+            </form>
+        </div>
+    }
+</div> *@
+
+
+
+@* @{
+    var products = ViewData["Products"] as List<Product>;
+    var subcategories = ViewData["Subcategories"] as List<Subcategory>;
+} *@
+
+
+
+@*     <!-- Product List -->
+    <div class="row">
+        @foreach (var product in products)
+        {
+            <div class="col-md-4 mb-4 ">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <!-- Product name in the center -->
+                        <h5 class="card-title">@product.ProductName</h5>
+                        <p class="card-text">Price: $@product.UnitPrice</p>
+                      @*   <p class="card-text">Subcategory: @product.Subcategory.Name</p> *@
+
+                        <!-- Add to Cart button below the name -->
+                      @*   <form method="post" action="@Url.Action("AddToCart", "ShoppingCart")">
+                            <input type="hidden" name="productId" value="@product.Id" />
+                            <button type="submit" class="btn btn-brown">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div> *@
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+@* Basic with no style *@
+
+
+@* <div class="product-list">
+    <h3>Available Products</h3>
+    <ul>
+        @foreach (var product in ViewData["Products"] as IEnumerable<Product>)
+        {
+            <li>
+                <div>
+                    <h4>@product.ProductName</h4>
+                    <p>Price: @product.UnitPrice</p>
+                    <form method="post" action="@Url.Action("AddToCart", "ShoppingCart")">
+                        <input type="hidden" name="productId" value="@product.Id" />
+                        <button type="submit">Add to Cart</button>
+                    </form>
+                </div>
+            </li>
+        }
+    </ul>
+</div> *@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@* <div class="subcategory-filter">
+    <h3>Filter by Subcategory</h3>
+    <ul>
+        @foreach (var subcategory in ViewData["Subcategories"] as IEnumerable<Subcategory>)
+        {
+            <li>
+                <a href="@Url.Action("AvailableProducts", "Products", new { subcategoryId = subcategory.Id })">
+                    @subcategory.Name
+                </a>
+            </li>
+        }
+    </ul>
+</div>
+
+<div class="product-list">
+    <h3>Available Products</h3>
+    <ul>
+        @foreach (var product in Model)
+        {
+            <li>
+                <div>
+                    <h4>@product.ProductName</h4>
+                    <p>Price: @product.UnitPrice</p>
+                    <form method="post" action="@Url.Action("AddToCart", "ShoppingCart")">
+                        <input type="hidden" name="productId" value="@product.Id" />
+                        <button type="submit">Add to Cart</button>
+                    </form>
+                </div>
+            </li>
+        }
+    </ul>
+</div> *@
