@@ -13,5 +13,12 @@ namespace GourmetShop.DataAccess.Repositories
         public Task<IEnumerable<Supplier>> GetSelectableSuppliers();
 
         public Task<IEnumerable<Subcategory>> GetSelectableSubcategories();
+
+        //CHECK ME
+       public Task<IEnumerable<Product>> GetAvailableProductsForCust();
+     
+
+
+
     }
 }

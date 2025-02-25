@@ -4,6 +4,8 @@ using GourmetShop.DataAccess.Repositories.Interfaces.CRUD_Subinterfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using GourmetShop.DataAccess.Models;
+using GourmetShop.DataAccess.Repositories.Classes;
+using GourmetShop.DataAccess.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +24,8 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IUserInfoRepository, UserInfoRepository>();
 builder.Services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
 builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
+builder.Services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
+
 var app = builder.Build();
 
 

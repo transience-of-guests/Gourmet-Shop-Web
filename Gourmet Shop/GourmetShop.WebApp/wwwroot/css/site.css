@@ -29,3 +29,38 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+.btn-brown {
+    background-color: #423f32; /* Brown color */
+    color: #f9f7f4; /* White text */
+    font-family: "Funnel Sans", serif;
+    font-weight: 300;
+}
+
+    .btn-brown:hover {
+        background-color: #5e3f28; /* Darker brown on hover */
+        color: #f9f7f4;
+    }
+
+.bg-light {
+    background-color: #f1ebe5; /* Light brown color */
+}
+#registerSubmit {
+    border-radius: 30px; /* Adjust the value to make the button more/less rounded */
+}
+
+.navbar {
+    /*margin-bottom: 0;*/ /* Removes any bottom margin */
+    /*padding-top: 0;*/ /* Removes any top padding */
+   /* padding-bottom: 0;*/ /* Removes any bottom padding */
+}
+
+.custom-container {
+    margin-top: -50px; /* Adjust this value to fine-tune the spacing */
+}
+
+.font-style {
+   
+    font-family: "Funnel Sans", serif;
+    font-weight: 300;
+}
