@@ -11,6 +11,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Reads from the text file that contains the connection string
+string connectionString = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "net9.0", "ConnectionString.txt"));
+// So JSON needs \\ to read one \, but the connection string needs \\ to read one \.
+builder.Configuration.GetSection("ConnectionStrings")["DefaultConnection"] = connectionString.Replace(@"\", @"\\");
+
 // Add services to the container.
 // ASSUMPTION: The database hasn't been created already
 builder.Services.AddRazorPages();
