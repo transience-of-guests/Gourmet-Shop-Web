@@ -90,8 +90,8 @@ namespace GourmetShop.DataAccess.Data
         {
             var roles = new List<IdentityRole>
             {
-                new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" },
-                new IdentityRole { Name = "User", NormalizedName = "USER" }
+                new IdentityRole { Id = "0722892d-b145-409f-aba5-adfe53976139", Name = "Admin", NormalizedName = "ADMIN" },
+                new IdentityRole { Id = "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee", Name = "Customer", NormalizedName = "CUSTOMER" }
             };
             return roles;
         }
