@@ -10,6 +10,7 @@ namespace GourmetShop.DataAccess.Models;
 [Microsoft.EntityFrameworkCore.Index("LastName", "FirstName", Name = "IndexUserName")]
 public partial class UserInfo
 {
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Key]
     public int Id { get; set; }
 
@@ -56,11 +57,10 @@ public partial class UserInfo
      
      */
 
-    [Required]
-    public required string AuthenticationId { get; set; }
+    public string AuthenticationId { get; set; }
     [InverseProperty("UserInfo")]
     [ForeignKey("AuthenticationId")]
-    public virtual required Authentication Authentication { get; set; }
+    public virtual Authentication Authentication { get; set; }
 
     [StringLength(50)]
     public string FirstName { get; set; } = null!;

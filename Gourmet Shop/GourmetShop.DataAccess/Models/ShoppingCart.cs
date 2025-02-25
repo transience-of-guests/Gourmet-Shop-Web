@@ -9,6 +9,7 @@ namespace GourmetShop.DataAccess.Models;
 [Table("ShoppingCart")]
 public partial class ShoppingCart
 {
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Key]
     public int Id { get; set; }
 

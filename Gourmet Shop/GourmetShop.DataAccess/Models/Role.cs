@@ -10,6 +10,7 @@ namespace GourmetShop.DataAccess.Models;
 [Microsoft.EntityFrameworkCore.Index("RoleName", Name = "UQ__Role__8A2B6160384E3530", IsUnique = true)]
 public partial class Role
 {
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Key]
     public int Id { get; set; }
 

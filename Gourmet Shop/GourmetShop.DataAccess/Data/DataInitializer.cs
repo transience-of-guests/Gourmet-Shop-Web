@@ -1,5 +1,6 @@
 ﻿using GourmetShop.DataAccess.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -12,50 +13,62 @@ namespace GourmetShop.DataAccess.Data
 {
     public class DataInitializer
     {
-        // TODO: Call this somewhere, maybe in the Program.cs file, need to have seed data for Authentication and fix the Users.json file to have the correct AuthenticationID
         public void Initialize(GourmetShopDbContext context)
         {
-            if (!context.Roles.Any())
+            try
             {
-                context.Roles.AddRange(SeedIdentityRoleData());
-                context.SaveChanges();
-            }
+                if (!context.Authentications.Any())
+                {
+                    context.Authentications.AddRange(SeedAuthenticationData());
+                    context.SaveChanges();
+                }
 
-            if (!context.Authentications.Any())
-            {
-                context.Authentications.AddRange(SeedAuthenticationData());
-                context.SaveChanges();
-            }
+                if (!context.Roles.Any())
+                {
+                    context.Roles.AddRange(SeedIdentityRoleData());
+                    context.SaveChanges();
+                }
 
-            if (!context.Users.Any())
-            {
-                context.Users.AddRange(SeedUserData());
-                context.SaveChanges();
-            }
+                if (!context.Users.Any())
+                {
+                    context.Users.AddRange(SeedUserData());
+                    context.SaveChanges();
+                }
 
-            if (!context.Products.Any())
-            {
-                context.Products.AddRange(SeedProductData());
-                context.SaveChanges();
-            }
+                if (!context.Categories.Any())
+                {
+                    context.Categories.AddRange(SeedCategoryData());
+                    context.SaveChanges();
+                }
 
-            if (!context.Subcategories.Any())
-            {
-                context.Subcategories.AddRange(SeedSubcategoryData());
-                context.SaveChanges();
-            }
+                if (!context.Subcategories.Any())
+                {
+                    context.Subcategories.AddRange(SeedSubcategoryData());
+                    context.SaveChanges();
+                }
 
-            if (!context.Suppliers.Any())
+                if (!context.Suppliers.Any())
+                {
+                    context.Suppliers.AddRange(SeedSupplierData());
+                    context.SaveChanges();
+                }
+
+                if (!context.Products.Any())
+                {
+                    context.Products.AddRange(SeedProductData());
+                    context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
             {
-                context.Suppliers.AddRange(SeedSupplierData());
-                context.SaveChanges();
+                throw;
             }
         }
 
         // TODO: Add phone numbers to the JSON file
         private List<Authentication> SeedAuthenticationData()
         {
-            var authentications = new List<Authentication>();
+            List<Authentication> authentications = new List<Authentication>();
 
             // The reason why we need this is because we're copying the JSON file to the output directory
             string assemblyFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -65,7 +78,9 @@ namespace GourmetShop.DataAccess.Data
             using (StreamReader r = new StreamReader(jsonFilePath))
             {
                 string json = r.ReadToEnd();
-                authentications = JsonConvert.DeserializeObject<List<Authentication>>(json);
+                Dictionary<string, List<Authentication>> data = JsonConvert.DeserializeObject<Dictionary<string, List<Authentication>>>(json);
+
+                authentications = data["Authentication"];
             }
 
             return authentications;
@@ -83,7 +98,7 @@ namespace GourmetShop.DataAccess.Data
 
         public List<Category> SeedCategoryData()
         {
-            var categories = new List<Category>();
+           List<Category> categories = new List<Category>();
 
             // The reason why we need this is because we're copying the JSON file to the output directory
             string assemblyFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -93,15 +108,20 @@ namespace GourmetShop.DataAccess.Data
             using (StreamReader r = new StreamReader(jsonFilePath))
             {
                 string json = r.ReadToEnd();
-                categories = JsonConvert.DeserializeObject<List<Category>>(json);
+                Dictionary<string, List<Category>> data = JsonConvert.DeserializeObject<Dictionary<string, List<Category>>>(json);
+            
+                categories = data["Categories"];
             }
 
-            return categories;
+            return categories.Select(c => new Category
+            {
+                Name = c.Name
+            }).ToList();
         }
 
         public List<Subcategory> SeedSubcategoryData()
         {
-            var subcategories = new List<Subcategory>();
+            List<Subcategory> subcategories = new List<Subcategory>();
 
             // The reason why we need this is because we're copying the JSON file to the output directory
             string assemblyFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -111,15 +131,22 @@ namespace GourmetShop.DataAccess.Data
             using (StreamReader r = new StreamReader(jsonFilePath))
             {
                 string json = r.ReadToEnd();
-                subcategories = JsonConvert.DeserializeObject<List<Subcategory>>(json);
+                Dictionary<string, List<Subcategory>> data = JsonConvert.DeserializeObject<Dictionary<string, List<Subcategory>>>(json);
+
+                subcategories = data["Subcategories"];
             }
 
-            return subcategories;
+            // Prevents the IDENTITY_INSERT issue
+            return subcategories.Select(s => new Subcategory
+            {
+                Name = s.Name,
+                CategoryId = s.CategoryId
+            }).ToList();
         }
 
         public List<Product> SeedProductData()
         {
-            var products = new List<Product>();
+            List<Product> products = new List<Product>();
 
             // The reason why we need this is because we're copying the JSON file to the output directory
             string assemblyFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -129,15 +156,24 @@ namespace GourmetShop.DataAccess.Data
             using (StreamReader r = new StreamReader(jsonFilePath))
             {
                 string json = r.ReadToEnd();
-                products = JsonConvert.DeserializeObject<List<Product>>(json);
+                Dictionary<string, List<Product>> data = JsonConvert.DeserializeObject<Dictionary<string, List<Product>>>(json);
+                products = data["Products"];
             }
 
-            return products;
+            return products.Select(p => new Product
+            {
+                ProductName = p.ProductName,
+                UnitPrice = p.UnitPrice,
+                SubcategoryId = p.SubcategoryId,
+                Package = p.Package,
+                IsDiscontinued = p.IsDiscontinued,
+                SupplierId = p.SupplierId
+            }).ToList();
         }
 
         public List<Supplier> SeedSupplierData()
         {
-            var suppliers = new List<Supplier>();
+            List<Supplier> suppliers = new List<Supplier>();
 
             // The reason why we need this is because we're copying the JSON file to the output directory
             string assemblyFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -147,15 +183,26 @@ namespace GourmetShop.DataAccess.Data
             using (StreamReader r = new StreamReader(jsonFilePath))
             {
                 string json = r.ReadToEnd();
-                suppliers = JsonConvert.DeserializeObject<List<Supplier>>(json);
+                Dictionary<string, List<Supplier>> data = JsonConvert.DeserializeObject<Dictionary<string, List<Supplier>>>(json);
+                suppliers = data["Suppliers"];
             }
 
-            return suppliers;
+            // Prevents the IDENTITY_INSERT issue
+            return suppliers.Select(s => new Supplier
+            {
+                CompanyName = s.CompanyName,
+                ContactName = s.ContactName,
+                ContactTitle = s.ContactTitle,
+                City = s.City,
+                Country = s.Country,
+                Phone = s.Phone,
+                Fax = s.Fax
+            }).ToList();
         }
 
         public List<UserInfo> SeedUserData()
         {
-            var users = new List<UserInfo>();
+            List<UserInfo> users = new List<UserInfo>();
 
             // The reason why we need this is because we're copying the JSON file to the output directory
             string assemblyFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -165,10 +212,19 @@ namespace GourmetShop.DataAccess.Data
             using (StreamReader r = new StreamReader(jsonFilePath))
             {
                 string json = r.ReadToEnd();
-                users = JsonConvert.DeserializeObject<List<UserInfo>>(json);
+                Dictionary<string, List<UserInfo>> data = JsonConvert.DeserializeObject<Dictionary<string, List<UserInfo>>>(json);
+
+                users = data["Users"];
             }
 
-            return users;
+            return users.Select(u => new UserInfo
+            {
+                AuthenticationId = u.AuthenticationId,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                City = u.City,
+                Country = u.Country
+            }).ToList();
         }
     }
 }

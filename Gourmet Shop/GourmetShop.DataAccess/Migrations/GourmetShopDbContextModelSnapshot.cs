@@ -25,7 +25,6 @@ namespace GourmetShop.DataAccess.Migrations
             modelBuilder.Entity("GourmetShop.DataAccess.Models.Authentication", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")

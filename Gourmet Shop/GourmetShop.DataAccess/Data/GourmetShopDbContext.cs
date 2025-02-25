@@ -47,25 +47,28 @@ public partial class GourmetShopDbContext : IdentityDbContext<Authentication>
 
     public virtual DbSet<UserInfo> Users { get; set; }
 
+    // TODO: Make a configuration file that handles these connection strings
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("data source=(localDb)\\MSSQLLocalDB;Database=GourmetShopDb; Trusted_Connection=True;");
+        => optionsBuilder.UseSqlServer("data source=localhost\\SQLEXPRESS01;initial catalog=GourmetShop;integrated security=True;trustservercertificate=True;");
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<Authentication>(entity =>
         {
-            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            
         });
 
         modelBuilder.Entity<Category>(entity =>
         {
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.HasKey(e => e.Id).HasName("PK__Categori__3214EC078BCE0C25");
         });
 
         modelBuilder.Entity<Order>(entity =>
         {
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.HasKey(e => e.Id).HasName("PK_ORDER");
 
             entity.Property(e => e.OrderDate).HasDefaultValueSql("(getdate())");
@@ -78,6 +81,7 @@ public partial class GourmetShopDbContext : IdentityDbContext<Authentication>
 
         modelBuilder.Entity<OrderItem>(entity =>
         {
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.HasKey(e => e.Id).HasName("PK_ORDERITEM");
 
             entity.Property(e => e.Quantity).HasDefaultValue(1);
@@ -93,6 +97,7 @@ public partial class GourmetShopDbContext : IdentityDbContext<Authentication>
 
         modelBuilder.Entity<Product>(entity =>
         {
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.HasKey(e => e.Id).HasName("PK_PRODUCT");
 
             entity.Property(e => e.SubcategoryId).HasDefaultValueSql("(NULL)");
@@ -107,6 +112,7 @@ public partial class GourmetShopDbContext : IdentityDbContext<Authentication>
 
         modelBuilder.Entity<ShoppingCart>(entity =>
         {
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.HasKey(e => e.Id).HasName("PK__Shopping__3214EC07CBA23AB8");
 
             entity.Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
@@ -127,6 +133,7 @@ public partial class GourmetShopDbContext : IdentityDbContext<Authentication>
 
         modelBuilder.Entity<Subcategory>(entity =>
         {
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.HasKey(e => e.Id).HasName("PK__Subcateg__3214EC07708EE32C");
 
             entity.HasOne(d => d.Category).WithMany(p => p.Subcategories).HasConstraintName("FK__Subcatego__Categ__4E88ABD4");
@@ -134,12 +141,14 @@ public partial class GourmetShopDbContext : IdentityDbContext<Authentication>
 
         modelBuilder.Entity<Supplier>(entity =>
         {
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.HasKey(e => e.Id).HasName("PK_SUPPLIER");
         });
 
         // TODO: Rename to UserInfo
         modelBuilder.Entity<UserInfo>(entity =>
         {
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.HasKey(e => e.Id).HasName("PK_USER");
 
             /*entity.Property(e => e.RoleId).HasDefaultValue(1);

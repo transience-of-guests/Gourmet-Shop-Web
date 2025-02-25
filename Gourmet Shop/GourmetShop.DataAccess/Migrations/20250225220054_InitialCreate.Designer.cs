@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GourmetShop.DataAccess.Migrations
 {
     [DbContext(typeof(GourmetShopDbContext))]
-    [Migration("20250225031105_InitialCreate")]
+    [Migration("20250225220054_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -28,7 +28,6 @@ namespace GourmetShop.DataAccess.Migrations
             modelBuilder.Entity("GourmetShop.DataAccess.Models.Authentication", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")

@@ -11,6 +11,7 @@ namespace GourmetShop.DataAccess.Models;
 [Microsoft.EntityFrameworkCore.Index("OrderDate", Name = "IndexOrderOrderDate")]
 public partial class Order
 {
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Key]
     public int Id { get; set; }
 
