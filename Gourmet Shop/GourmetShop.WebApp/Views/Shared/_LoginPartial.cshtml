@@ -5,6 +5,17 @@
 @inject UserManager<Authentication> UserManager
 
 <ul class="navbar-nav">
+    <!-- Subcategory Dropdown -->
+    <li class="nav-item dropdown font-style">
+        <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Subcategories
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="/SubCategory1">Subcategory 1</a></li>
+            <li><a class="dropdown-item" href="/SubCategory2">Subcategory 2</a></li>
+            <li><a class="dropdown-item" href="/SubCategory3">Subcategory 3</a></li>
+        </ul>
+    </li>
 @if (SignInManager.IsSignedIn(User))
 {
     <li class="nav-item">
@@ -18,11 +29,13 @@
 }
 else
 {
-    <li class="nav-item">
+        <li class="nav-item font-style">
         <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
     </li>
-    <li class="nav-item">
+        <li class="nav-item font-style">
         <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
     </li>
 }
+
+    
 </ul>
