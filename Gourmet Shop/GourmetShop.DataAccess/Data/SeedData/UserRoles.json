@@ -1,0 +1,368 @@
+﻿{
+  "UserRoles": [
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "1"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "2"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "3"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "4"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "5"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "6"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "7"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "8"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "9"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "10"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "11"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "12"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "13"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "14"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "15"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "16"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "17"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "18"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "19"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "20"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "21"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "22"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "23"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "24"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "25"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "26"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "27"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "28"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "29"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "30"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "31"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "32"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "33"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "34"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "35"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "36"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "37"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "38"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "39"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "40"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "41"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "42"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "43"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "44"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "45"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "46"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "47"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "48"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "49"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "50"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "51"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "52"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "53"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "54"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "55"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "56"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "57"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "58"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "59"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "60"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "61"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "62"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "63"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "64"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "65"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "66"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "67"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "68"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "69"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "70"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "71"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "72"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "73"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "74"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "75"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "76"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "77"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "78"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "79"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "80"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "81"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "82"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "83"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "84"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "85"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "86"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "87"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "88"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "89"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "90"
+    },
+    {
+      "RoleId": "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee",
+      "UserId": "91"
+    }
+  ]
+}

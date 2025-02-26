@@ -49,6 +49,9 @@
     <None Update="Data\SeedData\Suppliers.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Data\SeedData\UserRoles.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Data\SeedData\Users.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

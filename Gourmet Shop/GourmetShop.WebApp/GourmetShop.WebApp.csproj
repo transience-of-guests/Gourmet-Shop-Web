@@ -25,6 +25,9 @@
     <Content Include="..\GourmetShop.DataAccess\Data\SeedData\Suppliers.json" Link="Suppliers.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\GourmetShop.DataAccess\Data\SeedData\UserRoles.json" Link="UserRoles.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\GourmetShop.DataAccess\Data\SeedData\Users.json" Link="Users.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

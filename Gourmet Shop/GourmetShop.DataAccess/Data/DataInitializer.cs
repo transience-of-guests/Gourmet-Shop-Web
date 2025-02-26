@@ -35,6 +35,12 @@ namespace GourmetShop.DataAccess.Data
                     context.SaveChanges();
                 }
 
+                if (!context.UserRoles.Any())
+                {
+                    context.UserRoles.AddRange(SeedIdentityUserRoleData());
+                    context.SaveChanges();
+                }
+
                 if (!context.Categories.Any())
                 {
                     context.Categories.AddRange(SeedCategoryData());
@@ -94,6 +100,32 @@ namespace GourmetShop.DataAccess.Data
                 new IdentityRole { Id = "e1db9f9d-85e1-4f92-8d6f-f9f7224335ee", Name = "Customer", NormalizedName = "CUSTOMER" }
             };
             return roles;
+        }
+
+        public List<IdentityUserRole<string>> SeedIdentityUserRoleData()
+        {
+            List<IdentityUserRole<string>> userRoles;
+
+            string assemblyFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string jsonFilePath = Path.Combine(assemblyFolder, "UserRoles.json");
+
+            // Modify this to grab the SeedData from the JSON file, it's in a separate project
+            using (StreamReader r = new StreamReader(jsonFilePath))
+            {
+                string json = r.ReadToEnd();
+                Dictionary<string, List<IdentityUserRole<string>>> data = JsonConvert.DeserializeObject<Dictionary<string, List<IdentityUserRole<string>>>>(json);
+
+                userRoles = data["UserRoles"];
+            }
+
+            return userRoles.Select(ur =>
+            {
+                return new IdentityUserRole<string>
+                {
+                    UserId = ur.UserId,
+                    RoleId = ur.RoleId
+                };
+            }).ToList();
         }
 
         public List<Category> SeedCategoryData()
