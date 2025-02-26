@@ -31,14 +31,14 @@ body {
 }
 
 .btn-brown {
-    background-color: #423f32; /* Brown color */
+    background-color: #5e3f28; /* Brown color */
     color: #f9f7f4; /* White text */
-    font-family: "Funnel Sans", serif;
+    font-family: "Chivo", serif;
     font-weight: 300;
 }
 
     .btn-brown:hover {
-        background-color: #5e3f28; /* Darker brown on hover */
+        background-color: #423f32; /* Darker brown on hover */
         color: #f9f7f4;
     }
 
@@ -49,11 +49,7 @@ body {
     border-radius: 30px; /* Adjust the value to make the button more/less rounded */
 }
 
-.navbar {
-    /*margin-bottom: 0;*/ /* Removes any bottom margin */
-    /*padding-top: 0;*/ /* Removes any top padding */
-   /* padding-bottom: 0;*/ /* Removes any bottom padding */
-}
+
 
 .custom-container {
     margin-top: -50px; /* Adjust this value to fine-tune the spacing */
@@ -70,7 +66,7 @@ body {
     font-family: "Aboreto", serif;
     font-weight: 400;
     font-style: normal;
-    color: #423f32;
+    color: #f9f7f4; /*#423f32;*/
     /*font-family: "Butterfly Kids", serif;
     font-weight: 400;
     font-size: 40px;*/
@@ -90,3 +86,89 @@ body {
         color: #3A382C; /* Slightly darker shade for hover effect */
         text-decoration: underline; /* Underline on hover for better UX */
     }
+
+
+.navbar {
+    background-color: #69443c;
+   padding-top: 15px; /* Increase top padding */
+    padding-bottom: 15px; /* Increase bottom padding */
+    min-height: 70px; /* Adjust overall navbar height */
+
+    
+    /* #6c3b11*/
+}
+
+
+/*.cover-container {
+    height: 100vh;*/ /* Full screen height */
+    /*width: 100vw;*/ /* Full screen width */
+    /*background: url('/Icons&IMG/FoodCover.jpg') no-repeat center center/cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.content {
+    background: rgba(0, 0, 0, 0.5);*/ /* Semi-transparent overlay for better text readability */
+    /*padding: 40px;
+    border-radius: 10px;
+}*/
+
+.cover-container {
+    position: fixed; /* Covers the whole viewport */
+    top: 0;
+    left: 0;
+    width: 100vw; /* Full viewport width */
+    height: 100vh; /* Full viewport height */
+    background: url('/Icons&IMG/PastryCover.jpg') no-repeat center center/cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.content {
+    background: rgba(0, 0, 0, 0.5); /* Optional: Dark overlay for readability */
+    padding: 40px;
+    border-radius: 10px;
+    max-width: 90%; /* Ensures content is not too wide on large screens */
+}
+
+.font-color {
+    color: #f9f7f4;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*.cover-section {
+    min-height: 100vh;
+    background-color: #f8f5f2;*/ /* Soft cream background */
+    /*padding: 50px 15px;
+}
+
+.shop-now-btn {
+    background-color: #6c5b3c;*/ /* Brown button */
+    /*border: none;
+    padding: 12px 24px;
+}
+
+    .shop-now-btn:hover {
+        background-color: #5a4b32;
+    }*/
