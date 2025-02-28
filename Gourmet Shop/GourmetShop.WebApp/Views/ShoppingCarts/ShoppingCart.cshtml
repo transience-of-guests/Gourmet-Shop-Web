@@ -1,5 +1,78 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@using GourmetShop.DataAccess.Models
+@model List<ShoppingCartDetail>
+
+<h3>Your Shopping Cart</h3>
+
+@if (Model.Count == 0)
+{
+    <p>Your cart is empty.</p>
 }
+else
+{
+    @foreach (var item in Model)
+    {
+        <div class="cart-item-container">
+            <div class="cart-item">
+              @*   <img src="@item.Product.ImageUrl" alt="@item.Product.ProductName" class="product-image" /> *@
+                <div class="product-details">
+                    <p><strong>@item.Product.ProductName</strong></p>
+                    <p>@item.Price.ToString("C")</p>
+                    <p>Total: @(item.Quantity * item.Price).ToString("C")</p>
+                </div>
+
+                <!-- Quantity Up/Down input -->
+                <div class="quantity-container">
+                    <button class="quantity-btn" onclick="updateQuantity('@item.ProductId', -1)">-</button>
+                    <input type="number" id="quantity-@item.ProductId" value="@item.Quantity" min="1" class="quantity-input" onchange="changeQuantity('@item.ProductId')" />
+                    <button class="quantity-btn" onclick="updateQuantity('@item.ProductId', 1)">+</button>
+                </div>
+
+                <!-- Trash can button for removing product -->
+                <button class="remove-btn" onclick="removeFromCart('@item.CartId', '@item.ProductId')">
+                    <i class="fa fa-trash"></i> Remove
+                </button>
+            </div>
+        </div>
+    }
+
+    <a href="@Url.Action("PlaceOrder", "ShoppingCarts")" class="btn btn-success">Place Order</a>
+}
+
+<!-- Place the JavaScript here -->
+<script>
+    // Update quantity (increase or decrease)
+    function updateQuantity(productId, increment) {
+        var quantityInput = document.getElementById('quantity-' + productId);
+        var currentQuantity = parseInt(quantityInput.value);
+        var newQuantity = currentQuantity + increment;
+
+        if (newQuantity >= 1) {
+            quantityInput.value = newQuantity;
+            changeQuantity(productId);
+        }
+    }
+
+    // Handle quantity change when the input field is modified
+    function changeQuantity(productId) {
+        var quantityInput = document.getElementById('quantity-' + productId);
+        var newQuantity = parseInt(quantityInput.value);
+
+        if (newQuantity >= 1) {
+            // Make an AJAX request to update the quantity in the cart
+            $.post('/ShoppingCarts/cart/update', { productId: productId, newQuantity: newQuantity }, function(response) {
+                console.log('Quantity updated');
+            });
+        }
+    }
+
+    // Handle item removal from the cart
+    function removeFromCart(cartId, productId) {
+        if (confirm('Are you sure you want to remove this item from your cart?')) {
+            // Make an AJAX request to remove the product
+            $.post('/ShoppingCarts/cart/remove', { cartId: cartId, productId: productId }, function(response) {
+                // Reload the page or remove the item from the DOM
+                location.reload();
+            });
+        }
+    }
+</script>

@@ -1,9 +1,11 @@
+using Microsoft.Extensions.Logging;
 using GourmetShop.DataAccess.Data;
 using GourmetShop.DataAccess.Repositories;
 using GourmetShop.DataAccess.Repositories.Interfaces.CRUD_Subinterfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using GourmetShop.DataAccess.Models;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,17 +27,95 @@ builder.Services.AddDbContext<GourmetShopDbContext>(options =>
              dataInitializer.Initialize((GourmetShopDbContext)context);
          })
     );
+//builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+//    .AddEntityFrameworkStores<GourmetShopDbContext>()
+//    .AddDefaultTokenProviders();
 
+builder.Services.AddLogging(); // Add logging services
 builder.Services.AddDefaultIdentity<Authentication>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<GourmetShopDbContext>();
 
 // TODO: Add the necessary controllers and DI here
 //?? We have a user repository and an authentication repository. Wouldn't that be the same controller
 //that would redirect them to their respective pages?
+
+
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IUserInfoRepository, UserInfoRepository>();
 builder.Services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
 builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
 builder.Services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
+
+builder.Services.AddHttpContextAccessor();
+
+
+// Configure session (make sure session is added before using it)
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+
+//builder.Services.ConfigureApplicationCookie(options =>
+//{
+//    options.Events.OnSignedIn = async context =>
+//    {
+//        var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<Authentication>>();
+//        var user = await userManager.GetUserAsync(context.Principal);
+
+//        if (user != null)
+//        {
+//            var dbContext = context.HttpContext.RequestServices.GetRequiredService<GourmetShopDbContext>();
+
+//            // Retrieve the corresponding UserInfo record
+//            var userInfo = await dbContext.Users.FirstOrDefaultAsync(u => u.AuthenticationId == user.Id);
+//            if (userInfo != null)
+//            {
+//                context.HttpContext.Session.SetInt32("UserId", userInfo.Id);
+//            }
+//        }
+//    };
+//});
+// Configure Application Cookie with Logger
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Events.OnSignedIn = async context =>
+    {
+        var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<Authentication>>();
+        var user = await userManager.GetUserAsync(context.Principal);
+        var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+
+        if (user != null)
+        {
+            var dbContext = context.HttpContext.RequestServices.GetRequiredService<GourmetShopDbContext>();
+
+            // Retrieve the corresponding UserInfo record
+            var userInfo = await dbContext.Users.FirstOrDefaultAsync(u => u.AuthenticationId == user.Id);
+            if (userInfo != null)
+            {
+                context.HttpContext.Session.SetInt32("UserId", userInfo.Id);
+
+                // Log the UserId being set in the session
+               /* var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>(); */// Get the logger
+                logger.LogInformation("UserId set in session: " + userInfo.Id);
+            }
+            else
+            {
+                logger.LogWarning("UserInfo not found for user: " + user.UserName);
+            }
+            }
+            else
+            {
+                logger.LogWarning("User is not authenticated.");
+            }
+        
+    };
+});
+
+
+
 var app = builder.Build();
 
 
@@ -66,7 +146,10 @@ using (var scope = app.Services.CreateScope())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseSession();
+app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapStaticAssets();
 

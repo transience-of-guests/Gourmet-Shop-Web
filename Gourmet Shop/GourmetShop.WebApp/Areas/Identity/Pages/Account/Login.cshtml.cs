@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using GourmetShop.DataAccess.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace GourmetShop.WebApp.Areas.Identity.Pages.Account
 {
@@ -22,11 +23,12 @@ namespace GourmetShop.WebApp.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<Authentication> _signInManager;
         private readonly ILogger<LoginModel> _logger;
-
-        public LoginModel(SignInManager<Authentication> signInManager, ILogger<LoginModel> logger)
+        private readonly UserManager<Authentication> _userStore; 
+        public LoginModel(SignInManager<Authentication> signInManager, ILogger<LoginModel> logger, UserManager<Authentication> userStore)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _userStore = userStore;
         }
 
         /// <summary>
@@ -118,6 +120,17 @@ namespace GourmetShop.WebApp.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("UserInfo logged in.");
+                    // Store the UserId in session
+                    var user = await _userStore.FindByEmailAsync(Input.Email); // Get user by email
+                    if (user != null)
+                    {
+                        // Check if the user ID is a string and store accordingly
+                        
+                        
+                            HttpContext.Session.SetString("UserId", user.Id); // Store as a string
+                        
+                       
+                    }
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
