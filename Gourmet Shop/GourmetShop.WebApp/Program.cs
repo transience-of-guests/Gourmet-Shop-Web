@@ -66,6 +66,7 @@ using (var scope = app.Services.CreateScope())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
@@ -77,5 +78,71 @@ app.MapControllerRoute(
 
 app.MapRazorPages()
    .WithStaticAssets();
+
+using (var scope = app.Services.CreateScope())
+{
+    var serviceProvider = scope.ServiceProvider;
+    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = serviceProvider.GetRequiredService<UserManager<Authentication>>();
+
+    Task.Run(async () =>
+    {
+        try
+        {
+            
+            var adminRoleExists = await roleManager.RoleExistsAsync("Admin");
+            if (!adminRoleExists)
+            {
+                await roleManager.CreateAsync(new IdentityRole("Admin"));
+            }
+
+            
+            string adminEmail = "admin@admin.com";
+            var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
+            if (adminUser == null)
+            {
+                var newAdmin = new Authentication
+                {
+                    UserName = adminEmail,
+                    Email = adminEmail,
+                    EmailConfirmed = true,
+                    UserInfo = new UserInfo 
+                    {
+                        FirstName = "Admin",
+                        LastName = "User",
+                        AuthenticationId = adminEmail,
+                        City = "AdminCity",
+                        Country = "AdminCountry"
+                    }
+                };
+
+                var createAdminResult = await userManager.CreateAsync(newAdmin, "Admin@123");
+
+                if (createAdminResult.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(newAdmin, "Admin");
+                    
+                }
+                else
+                {
+                    Console.WriteLine("Failure.");
+                    foreach (var error in createAdminResult.Errors)
+                    {
+                        Console.WriteLine($" {error.Description}");
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("Admin user already exists.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error seeding admin user: {ex.Message}");
+        }
+    }).GetAwaiter().GetResult();
+}
 
 app.Run();

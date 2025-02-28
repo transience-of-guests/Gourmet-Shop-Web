@@ -1,0 +1,42 @@
+﻿@model Admin.WebApp.Models.LoginViewModel
+
+@{
+	ViewData["Title"] = "Admin Login";
+}
+
+@using GourmetShop.DataAccess.Models
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<Authentication> SignInManager
+@inject UserManager<Authentication> UserManager
+
+<ul class="navbar-nav">
+   
+       
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item">
+			@* TODO: Add a link to the admin dashboard *@
+            <a id="manage" class="nav-link font-color" asp-area="Identity" asp-page="@* something goes here *@ " title="Manage">Hello @UserManager.GetUserName(User)!</a>
+        </li>
+        <li class="nav-item">
+            @* TODO: Make this go somewhere *@
+            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@* something goes here *@">
+                <button id="logout" type="submit" class="nav-link btn btn-link font-color border-0">Logout</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item font-style">
+            <a class="nav-link font-color" id="register" asp-controller="Admin" asp-action="AdminRegister">Register</a>
+        </li>
+        <li class="nav-item font-style">
+            <a class="nav-link font-color" id="login" asp-controller="Admin" asp-action="AdminLogin">Login</a>
+        </li>
+    }
+
+
+</ul>
+
+

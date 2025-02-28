@@ -17,12 +17,12 @@ public partial class UserInfo
     // public int RoleId { get; set; }
 
     /*
-     private readonly UserManager<IdentityUser> _userManager;
+     private readonly UserManger<Authentication> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
         private readonly UserRepository _userRepository;
 
-        public UsersController(UserRepository userRepository, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public UsersController(UserRepository userRepository, UserManger<Authentication> userManager, RoleManager<IdentityRole> roleManager)
         {
             _userRepository = userRepository;
             _userManager = userManager;

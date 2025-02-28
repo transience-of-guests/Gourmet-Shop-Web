@@ -16,12 +16,12 @@ namespace GourmetShop.WebApp.Controllers
 {
     public class UserInfoesController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManger<Authentication> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
         private readonly IUserInfoRepository _userInfoRepository;
 
-        public UserInfoesController(IUserInfoRepository userInfoRepository, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public UserInfoesController(IUserInfoRepository userInfoRepository, UserManger<Authentication> userManager, RoleManager<IdentityRole> roleManager)
         {
             _userInfoRepository = userInfoRepository;
             _userManager = userManager;
