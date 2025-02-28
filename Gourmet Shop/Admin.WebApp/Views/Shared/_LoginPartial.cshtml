@@ -7,23 +7,21 @@
 @if (SignInManager.IsSignedIn(User))
 {
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-controller="Admin" asp-action="Dashboard">
-                Hello @UserManager.GetUserName(User)!
-            </a>
+            <a id="manage" class="nav-link font-color" asp-area="Identity" asp-page="/Products/AvailableProducts" title="Manage">Hello @UserManager.GetUserName(User)!</a>
         </li>
         <li class="nav-item">
-            <form method="post" asp-controller="Admin" asp-action="Logout">
-                <button type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
+            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/Products/AvailableProducts">
+                <button id="logout" type="submit" class="nav-link btn btn-link font-color border-0">Logout</button>
             </form>
         </li>
 }
 else
 {
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-controller="Admin" asp-action="AdminRegister">Register</a>
+        <li class="nav-item font-style">
+            <a class="nav-link font-color" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-controller="Admin" asp-action="AdminLogin">Login</a>
+        <li class="nav-item font-style">
+            <a class="nav-link font-color" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
         </li>
 }
 </ul>

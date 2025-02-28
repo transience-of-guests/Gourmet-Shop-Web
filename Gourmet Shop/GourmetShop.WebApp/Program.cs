@@ -81,6 +81,7 @@ app.MapControllerRoute(
 app.MapRazorPages()
    .WithStaticAssets();
 
+// TODO: Remove because you should only create the admin in the admin web app project
 using (var scope = app.Services.CreateScope())
 {
     var serviceProvider = scope.ServiceProvider;
