@@ -26,7 +26,9 @@ builder.Services.AddDbContext<GourmetShopDbContext>(options =>
          })
     );
 
-builder.Services.AddDefaultIdentity<Authentication>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<GourmetShopDbContext>();
+builder.Services.AddDefaultIdentity<Authentication>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<GourmetShopDbContext>();
 
 // TODO: Add the necessary controllers and DI here
 //?? We have a user repository and an authentication repository. Wouldn't that be the same controller
