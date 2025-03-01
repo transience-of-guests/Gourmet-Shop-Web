@@ -18,9 +18,31 @@ namespace GourmetShop.DataAccess.Repositories
         {
             _context = context;
         }
-        public async Task<IEnumerable<Subcategory>> GetAllSubcategoriesAsync()
+
+        public async Task AddAsync(Subcategory item)
+        {
+            _context.Subcategories.Add(item);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var subcategory = await _context.Subcategories.FindAsync(id);
+            if (subcategory != null)
+            {
+                _context.Subcategories.Remove(subcategory);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<IEnumerable<Subcategory>> GetAllAsync()
         {
             return await _context.Subcategories.ToListAsync();
+        }
+
+        public async Task<Subcategory> GetAsync(int id)
+        {
+            return await _context.Subcategories.FindAsync(id);
         }
 
         public async Task<IEnumerable<Product>> GetProductsBySubcategoryAsync(int subcategoryId)
@@ -28,6 +50,12 @@ namespace GourmetShop.DataAccess.Repositories
             return await _context.Products
                 .Where(p => p.SubcategoryId == subcategoryId && !p.IsDiscontinued)
                 .ToListAsync();
+        }
+
+        public async Task UpdateAsync(Subcategory item)
+        {
+            _context.Entry(item).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
     }
 }

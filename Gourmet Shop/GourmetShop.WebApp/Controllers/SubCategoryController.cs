@@ -18,12 +18,12 @@ namespace GourmetShop.WebApp.Controllers
         // GET: SubCategory
         //public async Task<IActionResult> Index()
         //{
-        //    var subcategories = await _subcategoryRepository.GetAllSubcategoriesAsync();
+        //    var subcategories = await _subcategoryRepository.GetAllAsync();
         //    return View(subcategories); // Pass subcategories to the view
         //}
         public async Task<IActionResult> Index()
         {
-            var subcategories = await _subcategoryRepository.GetAllSubcategoriesAsync();
+            var subcategories = await _subcategoryRepository.GetAllAsync();
             ViewData["Subcategories"] = subcategories; // Pass subcategories using ViewData
             return View();
             //var products = await _productRepository.GetAvailableProductsForCust();
@@ -65,7 +65,7 @@ namespace GourmetShop.WebApp.Controllers
         //    [HttpGet]
         //    public async Task<IActionResult> GetAllSubcategories()
         //    {
-        //        var subcategories = await _subcategoryRepository.GetAllSubcategoriesAsync();
+        //        var subcategories = await _subcategoryRepository.GetAllAsync();
         //        return Ok(subcategories);
         //    }
 

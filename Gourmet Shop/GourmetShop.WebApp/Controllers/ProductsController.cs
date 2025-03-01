@@ -131,15 +131,16 @@ namespace GourmetShop.WebApp.Controllers
         //    return View(products);
         //}
 
-        
         public async Task<IActionResult> AvailableProducts(int? subcategoryId)
         {
 
             // Hardcoded products for testing purposes
 
+            // This is to make sure that we can set the selected subcategory in the dropdown at all times
+            // ViewData["SelectedSubcategoryId"] = subcategoryId?.ToString() ?? "";
 
 
-            var subcategories = await _subcategoryRepository.GetAllSubcategoriesAsync();
+            var subcategories = await _subcategoryRepository.GetAllAsync();
             ViewData["Subcategories"] = subcategories;
 
             // Get available products, filtered by subcategory if provided
@@ -171,7 +172,7 @@ namespace GourmetShop.WebApp.Controllers
         //        ViewData["Subcategories"] = hardcodedSubcategories;
 
         //        // Get all subcategories for filtering
-        //        var subcategories = await _subcategoryRepository.GetAllSubcategoriesAsync();
+        //        var subcategories = await _subcategoryRepository.GetAllAsync();
         //        //ViewData["Subcategories"] = subcategories;
 
         //        // Set the hardcoded products in ViewData

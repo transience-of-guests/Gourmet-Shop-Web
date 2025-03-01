@@ -5,42 +5,31 @@
 @inject UserManager<Authentication> UserManager
 
 <ul class="navbar-nav">
-    <!-- Subcategory Dropdown -->
-    <li class="nav-item dropdown font-style">
-        <a class="nav-link dropdown-toggle font-color" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Subcategories
-        </a>
-        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="/SubCategory1">Subcategory 1</a></li>
-            <li><a class="dropdown-item" href="/SubCategory2">Subcategory 2</a></li>
-            <li><a class="dropdown-item" href="/SubCategory3">Subcategory 3</a></li>
-        </ul>
-    </li>
-@if (SignInManager.IsSignedIn(User))
-{
-    @* <li class="nav-item">
+	@if (SignInManager.IsSignedIn(User))
+	{
+		@* <li class="nav-item">
             <a id="manage" class="nav-link font-color" asp-area="Identity" asp-page="/Products/AvailableProducts" title="Manage">Hello @UserManager.GetUserName(User)!</a>
     </li> *@
-        <li class="nav-item">
-            <a class="nav-link font-color" asp-controller="ShoppingCarts" asp-action="ViewCart" title="Shopping Cart">
-                <i class="fas fa-shopping-cart"></i>
-            </a>
-        </li>
-    <li class="nav-item">
-        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/Products/AvailableProducts">
-                <button id="logout" type="submit" class="nav-link btn btn-link font-color border-0">Logout</button>
-        </form>
-    </li>
-}
-else
-{
-        <li class="nav-item font-style">
-        <a class="nav-link font-color" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
-    </li>
-        <li class="nav-item font-style">
-            <a class="nav-link font-color" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </li>
-}
+		<li class="nav-item">
+			<a class="nav-link font-color" asp-controller="ShoppingCarts" asp-action="ViewCart" title="Shopping Cart">
+				<i class="fas fa-shopping-cart"></i>
+			</a>
+		</li>
+		<li class="nav-item">
+			<form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/Products/AvailableProducts">
+				<button id="logout" type="submit" class="nav-link btn btn-link font-color border-0">Logout</button>
+			</form>
+		</li>
+	}
+	else
+	{
+		<li class="nav-item font-style">
+			<a class="nav-link font-color" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+		</li>
+		<li class="nav-item font-style">
+			<a class="nav-link font-color" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+		</li>
+	}
 
-    
+
 </ul>

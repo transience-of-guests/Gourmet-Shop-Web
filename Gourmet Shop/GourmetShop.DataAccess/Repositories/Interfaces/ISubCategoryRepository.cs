@@ -7,11 +7,8 @@ using System.Threading.Tasks;
 
 namespace GourmetShop.DataAccess.Repositories
 {
-    public interface ISubCategoryRepository : IGourmetShopRepository<Subcategory>
+    public interface ISubCategoryRepository : IGourmetShopRepository<Subcategory>, ICrudOperations<Subcategory>
     {
-
-        Task<IEnumerable<Subcategory>> GetAllSubcategoriesAsync();
         Task<IEnumerable<Product>> GetProductsBySubcategoryAsync(int subcategoryId);
-
     }
 }
