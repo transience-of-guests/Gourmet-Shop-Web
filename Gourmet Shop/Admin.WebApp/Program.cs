@@ -1,5 +1,6 @@
 using GourmetShop.DataAccess.Data;
 using GourmetShop.DataAccess.Models;
+using GourmetShop.DataAccess.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,7 +37,11 @@ namespace Admin.WebApp
             .AddDefaultTokenProviders()
             .AddDefaultUI()
             .AddRoles<IdentityRole>();
-            
+
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
+            builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
+            builder.Services.AddScoped<IUserInfoRepository, UserInfoRepository>();
+
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();

@@ -1,4 +1,5 @@
-﻿using Admin.WebApp.Models;
+﻿using System.Security.Principal;
+using Admin.WebApp.Models;
 using GourmetShop.DataAccess.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -30,13 +31,13 @@ namespace Admin.WebApp.Controllers
         [HttpGet]
         public IActionResult AdminLogin()
         {
-            return View();
+            return RedirectToPage("/Account/Login", new { area = "Identity" });
         }
 
         [HttpGet]
         public IActionResult AdminRegister()
         {
-            return View();
+            return RedirectToPage("/Account/Register", new { area = "Identity" });
         }
 
         [HttpPost]
