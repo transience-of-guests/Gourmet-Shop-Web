@@ -1,0 +1,74 @@
+﻿@model IEnumerable<GourmetShop.DataAccess.Models.Product>
+
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="cover-container d-flex align-items-center justify-content-center text-center">
+    <div class="content">
+        <h1 class="display-3 text-black Gourmet-Header-Font">Gourmet Shop Products</h1>
+        
+    <div class="table-responsive overflow-auto border rounded p-3" style="height: 35vh;">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Product Name</th>
+                        <th>Subcategory</th>
+                        <th>Supplier</th>
+                        <th>Unit Price</th>
+                        <th>Package</th>
+                        <th>Is Discontinued</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var product in Model)
+                    {
+                        <tr id="row-@product.Id">
+                            <td>@product.Id</td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm" 
+                                id="name-@product.Id" 
+                                value="@product.ProductName" 
+                                maxlength="50" required />
+                            </td>
+                            <td>@product.Subcategory.Name</td>
+                            <td>@product.Supplier.CompanyName</td>
+                            <td>
+                                <input type="number" 
+                                    class="form-control form-control-sm"
+                                    value="@product.UnitPrice?.ToString("F2")"
+                                    step="0.01"
+                                    id="price-@product.Id" />
+                            </td>
+                            <td>
+                                <input type="text" 
+                                    class="form-control form-control-sm" 
+                                    id="package-@product.Id"
+                                    value="@(!string.IsNullOrEmpty(product.Package) ? product.Package : "")"
+                                    maxlength="30"/>
+                            </td>
+                            <td class="text-center">
+                                <input type ="checkbox" id="isDiscontinued-@product.Id"
+                                @(product.IsDiscontinued ? "checked": "")/>
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+    </div>
+       
+    <div class="fixed-product-buttons">
+            @*TODO//Make these buttons then make them do something*@
+            @*These are just here for placeholder looks*@
+			<button class="btn btn-outline-primary" onclick="addProduct()">Add Product</button>
+			<button class="btn btn-outline-success" onclick="updateProduct()">Update Product</button>
+			<button class="btn btn-outline-danger" onclick="deleteProduct()">Delete Product</button>
+			<button class="btn btn-outline-primary" onclick="searchProduct()">Search Product</button>
+    </div>
+        
+</div>
+</div>

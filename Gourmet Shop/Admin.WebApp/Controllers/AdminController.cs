@@ -61,6 +61,14 @@ namespace Admin.WebApp.Controllers
             ModelState.AddModelError("", "Invalid email or password.");
             return View(model);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home"); // Redirects to Home page after logout
+        }
     }
 }
 
