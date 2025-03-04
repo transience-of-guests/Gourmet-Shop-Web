@@ -35,7 +35,7 @@ namespace GourmetShop.WebApp.Controllers
         {
             int? customerId = null;
 
-            //return _httpContextAccessor.HttpContext?.Session.GetInt32("UserId");
+            // Reference Login.cshtml.cs ln.130 to see where this is set
             string authId = _httpContextAccessor.HttpContext?.Session.GetString("UserId");
 
             if (authId == null && User.Identity.IsAuthenticated)
@@ -87,13 +87,6 @@ namespace GourmetShop.WebApp.Controllers
         public async Task<IActionResult> AddToCart(int productId, int quantity = 1) // Default quantity to 1
         {
             int customerId = (int) await GetCustomerIdFromSession();
-            
-            // Don't need this since we have Authorize
-                if (customerId == null)
-                {
-                // Redirect to login page if user is not logged in
-                    // return RedirectToPage("/Account/Login", new { area = "Identity" });
-                }
 
             await _shoppingCartRepository.AddToCartAsync(customerId, productId, quantity);
             return RedirectToAction("ViewCart", "ShoppingCarts");
@@ -104,9 +97,7 @@ namespace GourmetShop.WebApp.Controllers
         public async Task<IActionResult> UpdateCartItemQuantity(int cartId, int productId, int newQuantity)
         {
             int customerId = (int) await GetCustomerIdFromSession();
-            if (customerId == null)
-                return Unauthorized(new { Message = "User not logged in." });
-
+          
             await _shoppingCartRepository.UpdateCartItemQuantity(cartId, productId, newQuantity);
             return Ok(new { Message = "Cart updated" });
         }
@@ -116,9 +107,7 @@ namespace GourmetShop.WebApp.Controllers
         public async Task<IActionResult> RemoveFromCart(int cartId, int productId)
         {
             int customerId = (int) await GetCustomerIdFromSession();
-            if (customerId == null)
-                return Unauthorized(new { Message = "User not logged in." });
-
+          
             await _shoppingCartRepository.RemoveFromCart(cartId, productId);
             return Ok(new { Message = "Item removed from cart" });
         }
@@ -128,14 +117,13 @@ namespace GourmetShop.WebApp.Controllers
         public async Task<IActionResult> ClearCart(int cartId)
         {
             int customerId = (int) await GetCustomerIdFromSession();
-            if (customerId == null)
-                return Unauthorized(new { Message = "User not logged in." });
-
+            
             await _shoppingCartRepository.ClearCart(cartId);
             return Ok(new { Message = "Cart has been cleared." });
         }
 
         [HttpGet("cart/view")]
+        [Authorize]
         //public async Task<IActionResult> ViewCart()
         //{
         //    int customerId = (int) await GetCustomerIdFromSession();
@@ -143,7 +131,7 @@ namespace GourmetShop.WebApp.Controllers
         //        return Unauthorized(new { Message = "User not logged in." });
 
         //    int cartId = await _shoppingCartRepository.GetCartIdForCustomerAsync(customerId);
-        //    var cartItems = await _shoppingCartRepository.ViewCartASync(cartId);
+        //    var cartItems = await _shoppingCartRepository.ViewCartAsync(cartId);
         //    // Pass the cart items to the view
         //    return View("ShoppingCart", cartItems);
         //    //return Ok(cartItems);
@@ -151,28 +139,20 @@ namespace GourmetShop.WebApp.Controllers
         public async Task<IActionResult> ViewCart()
         {
             int customerId = (int) await GetCustomerIdFromSession();
-            if (customerId == null)
-            {
-                _logger.LogInformation("Session does not contain UserId.");
-                return Unauthorized(new { Message = "User not logged in." });
-            }
-
-            _logger.LogInformation("UserId from session: " + customerId);
-
+  
             int cartId = await _shoppingCartRepository.GetCartIdForCustomerAsync(customerId);
-            var cartItems = await _shoppingCartRepository.ViewCartASync(cartId);
+            var cartItems = await _shoppingCartRepository.ViewCartAsync(cartId);
             return View("ShoppingCart", cartItems);
         }
 
 
         [HttpPost("cart/place-order")]
+        [Authorize]
         public async Task<IActionResult> PlaceOrder()
         {
             int customerId = (int) await GetCustomerIdFromSession();
-            if (customerId == null)
-                return Unauthorized(new { Message = "User not logged in." });
 
-            bool success = await _shoppingCartRepository.PlaceOrderAync(customerId);
+            bool success = await _shoppingCartRepository.PlaceOrderAsync(customerId);
             if (success)
             {
                 // Redirect to the "OrderPlaced" view after order is successfully placed
@@ -191,7 +171,7 @@ namespace GourmetShop.WebApp.Controllers
         //    if (customerId == null)
         //        return Unauthorized(new { Message = "User not logged in." });
 
-        //    bool success = await _shoppingCartRepository.PlaceOrderAync(customerId);
+        //    bool success = await _shoppingCartRepository.PlaceOrderAsync(customerId);
         //    return success
         //        ? Ok(new { Message = "Order placed." })
         //        : BadRequest(new { Message = "Failed to place order." });
@@ -236,14 +216,14 @@ namespace GourmetShop.WebApp.Controllers
         //[HttpGet("cart/view/{cartId}")]
         //public async Task<IActionResult> ViewCart(int cartId)
         //{
-        //    var cartItems = await _shoppingCartRepository.ViewCartASync(cartId);
+        //    var cartItems = await _shoppingCartRepository.ViewCartAsync(cartId);
         //    return Ok(cartItems);
         //}
 
         //[HttpPost("cart/place-order")]
         //public async Task<IActionResult> PlaceOrder(int customerId)
         //{
-        //    bool success = await _shoppingCartRepository.PlaceOrderAync(customerId);
+        //    bool success = await _shoppingCartRepository.PlaceOrderAsync(customerId);
         //    return success
         //        ? Ok(new { Message = "Order placed." })
         //        : BadRequest(new { Message = "Failed to place order." });

@@ -15,8 +15,8 @@ namespace GourmetShop.DataAccess.Repositories.Interfaces.CRUD_Subinterfaces
         Task UpdateCartItemQuantity(int cartId, int productId, int newQuantity);
         Task RemoveFromCart(int cartId, int productId);
         Task ClearCart(int cartId);
-        Task<List<ShoppingCartDetail>> ViewCartASync(int cartId);
-        Task<bool> PlaceOrderAync(int customerId);
+        Task<List<ShoppingCartDetail>> ViewCartAsync(int cartId);
+        Task<bool> PlaceOrderAsync(int customerId);
 
         Task<int> GetCartIdForCustomerAsync(int customerId);
           

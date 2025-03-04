@@ -21,6 +21,7 @@ else
                 </div>
 
                 <!-- Quantity Up/Down input -->
+                <!--FIXME: Actually update the quantity of the products-->
                 <div class="quantity-container">
                     <button class="quantity-btn" onclick="updateQuantity('@item.ProductId', -1)">-</button>
                     <input type="number" id="quantity-@item.ProductId" value="@item.Quantity" min="1" class="quantity-input" onchange="changeQuantity('@item.ProductId')" />

@@ -103,14 +103,14 @@ namespace GourmetShop.DataAccess.Repositories
                
         }
 
-       public async Task <List<ShoppingCartDetail>> ViewCartASync(int cartId)
+       public async Task <List<ShoppingCartDetail>> ViewCartAsync(int cartId)
         {
                 return await _context.ShoppingCartDetails
                 .Where(c => c.CartId == cartId)
                 .Include(c =>c.Product).ToListAsync();
         }
 
-        public async Task<bool> PlaceOrderAync(int customerId)
+        public async Task<bool> PlaceOrderAsync(int customerId)
         {
             var cart = await _context.ShoppingCarts
                 .Include(c => c.ShoppingCartDetails)
