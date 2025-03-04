@@ -20,12 +20,14 @@ namespace GourmetShop.WebApp.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
 
         private readonly IUserInfoRepository _userInfoRepository;
+        private readonly GourmetShopDbContext _context;
 
-        public UserInfoesController(IUserInfoRepository userInfoRepository, UserManager<Authentication> userManager, RoleManager<IdentityRole> roleManager)
+        public UserInfoesController(IUserInfoRepository userInfoRepository, UserManager<Authentication> userManager, RoleManager<IdentityRole> roleManager, GourmetShopDbContext context)
         {
             _userInfoRepository = userInfoRepository;
             _userManager = userManager;
             _roleManager = roleManager;
+            _context = context;
         }
 
         // TODO: Authorize so that only admins can see this
@@ -70,19 +72,37 @@ namespace GourmetShop.WebApp.Controllers
             return View(userInfo);
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Create()
         {
             return View();
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Create")]
         public async Task<IActionResult> Create(UserInfo userInfo)
         {
-            await _userInfoRepository.AddAsync(userInfo);
-            return RedirectToAction(nameof(Index));
+            //await _userInfoRepository.AddAsync(userInfo);
+            //return RedirectToAction(nameof(Index));
+
+
+
+
+            var user = await _userManager.GetUserAsync(User); // Get the current logged-in user
+
+            if (user == null)
+            {
+                return RedirectToAction("Index", "Home"); // Redirect if user is not authenticated
+                //Needs to be dredurected to the login.
+            }
+
+            ViewBag.AuthUserId = user.Id; // Assign user ID to ViewBag
+
+            return View();
+
+
+
 
             // FIXME: Validation will never work because ModelState is always invalid, need to use ViewModels?
             /*if (ModelState.IsValid)
