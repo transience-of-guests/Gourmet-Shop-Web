@@ -32,6 +32,7 @@ namespace GourmetShop.DataAccess.Repositories
             throw new NotImplementedException();
         }
 
+        //FIXME: What is this function for again?
         public async Task<IEnumerable<UserInfo>> GetAllByRoleAsync(List<string?> authIds)
         {
             return await _context.Users
@@ -79,6 +80,12 @@ namespace GourmetShop.DataAccess.Repositories
             .FirstOrDefaultAsync();
 
             return result != null ? (result.TotalUnitsSold, result.TotalSalesAmount) : (0, 0);
+        }
+
+        public async Task<UserInfo> GetByAuthenticationIdAsync(string authenticationId)
+        {
+            return await _context.Users
+               .FirstOrDefaultAsync(item => item.AuthenticationId == authenticationId);
         }
     }
 }

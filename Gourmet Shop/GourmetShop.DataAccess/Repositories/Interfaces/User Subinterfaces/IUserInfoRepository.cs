@@ -12,5 +12,7 @@ namespace GourmetShop.DataAccess.Repositories
         public Task<(int TotalUnitsSold, decimal TotalSalesAmount)> GetProductSalesAsync(int productId);
 
         public Task<IEnumerable<UserInfo>> GetAllByRoleAsync(List<string?> authIds);
+
+        public Task<UserInfo> GetByAuthenticationIdAsync(string authenticationId);
     }
 }

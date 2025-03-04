@@ -11,6 +11,8 @@ using GourmetShop.DataAccess.Repositories;
 using GourmetShop.DataAccess.Repositories.Interfaces.CRUD_Subinterfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace GourmetShop.WebApp.Controllers
 {
@@ -19,46 +21,62 @@ namespace GourmetShop.WebApp.Controllers
         private readonly IShoppingCartRepository _shoppingCartRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogger<ShoppingCartsController> _logger;
+        private readonly IUserInfoRepository _userInfoRepository;
 
-        public ShoppingCartsController(IShoppingCartRepository shoppingCartRepository, IHttpContextAccessor httpContextAccessor, ILogger<ShoppingCartsController> logger)
+        public ShoppingCartsController(IShoppingCartRepository shoppingCartRepository, IHttpContextAccessor httpContextAccessor, ILogger<ShoppingCartsController> logger, IUserInfoRepository userInfoRepository)
         {
             _shoppingCartRepository = shoppingCartRepository;
             _httpContextAccessor = httpContextAccessor;
             _logger = logger;
+            _userInfoRepository = userInfoRepository;
         }
 
-        private int? GetCustomerIdFromSession()
+        private async Task<int?> GetCustomerIdFromSession()
         {
-            //return _httpContextAccessor.HttpContext?.Session.GetInt32("UserId");
-            var customerIdString = _httpContextAccessor.HttpContext?.Session.GetString("UserId");
+            int? customerId = null;
 
-            if (int.TryParse(customerIdString, out int customerId))
+            //return _httpContextAccessor.HttpContext?.Session.GetInt32("UserId");
+            string authId = _httpContextAccessor.HttpContext?.Session.GetString("UserId");
+
+            if (authId == null && User.Identity.IsAuthenticated)
             {
-                return customerId;
+                authId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             }
 
-            return null;
+            if (authId != null)
+            {
+                UserInfo? userInfo = await _userInfoRepository.GetByAuthenticationIdAsync(authId);
+
+                if (userInfo != null)
+                {
+                    customerId = userInfo.Id;
+                }
+            }
+
+            return customerId;
         }
 
         [HttpGet("cart/get-cart-id")]
+        [Authorize]
         public async Task<IActionResult> GetCartId()
         {
-            var customerId = GetCustomerIdFromSession();
+            int customerId = (int) await GetCustomerIdFromSession();
+
             if (customerId == null)
                 return Unauthorized(new { Message = "User not logged in." });
 
-            int cartId = await _shoppingCartRepository.GetCartIdForCustomerAsync(customerId.Value);
+            int cartId = await _shoppingCartRepository.GetCartIdForCustomerAsync(customerId);
             return Ok(new { CartId = cartId });
         }
 
         //[HttpPost("cart/add")]
         //public async Task<IActionResult> AddToCart(int productId, int quantity)
         //{
-        //    var customerId = GetCustomerIdFromSession();
+        //    int customerId = (int) await GetCustomerIdFromSession();
         //    if (customerId == null)
         //        return Unauthorized(new { Message = "User not logged in." });
 
-        //    await _shoppingCartRepository.AddToCartAsync(customerId.Value, productId, quantity);
+        //    await _shoppingCartRepository.AddToCartAsync(customerId, productId, quantity);
         //   // return Ok(new { Message = "Product added to cart" });
         //    // Redirect to the cart view
         //    return RedirectToAction("ViewCart");
@@ -68,7 +86,7 @@ namespace GourmetShop.WebApp.Controllers
         [Authorize]
         public async Task<IActionResult> AddToCart(int productId, int quantity = 1) // Default quantity to 1
         {
-            var customerId = GetCustomerIdFromSession();
+            int customerId = (int) await GetCustomerIdFromSession();
             
             // Don't need this since we have Authorize
                 if (customerId == null)
@@ -77,15 +95,15 @@ namespace GourmetShop.WebApp.Controllers
                     // return RedirectToPage("/Account/Login", new { area = "Identity" });
                 }
 
-            await _shoppingCartRepository.AddToCartAsync(customerId.Value, productId, quantity);
-            return RedirectToAction("ViewCart", "ShoppingCart");
+            await _shoppingCartRepository.AddToCartAsync(customerId, productId, quantity);
+            return RedirectToAction("ViewCart", "ShoppingCarts");
         }
 
         [HttpPost("cart/update")]
         [Authorize]
         public async Task<IActionResult> UpdateCartItemQuantity(int cartId, int productId, int newQuantity)
         {
-            var customerId = GetCustomerIdFromSession();
+            int customerId = (int) await GetCustomerIdFromSession();
             if (customerId == null)
                 return Unauthorized(new { Message = "User not logged in." });
 
@@ -97,7 +115,7 @@ namespace GourmetShop.WebApp.Controllers
         [Authorize]
         public async Task<IActionResult> RemoveFromCart(int cartId, int productId)
         {
-            var customerId = GetCustomerIdFromSession();
+            int customerId = (int) await GetCustomerIdFromSession();
             if (customerId == null)
                 return Unauthorized(new { Message = "User not logged in." });
 
@@ -109,7 +127,7 @@ namespace GourmetShop.WebApp.Controllers
         [Authorize]
         public async Task<IActionResult> ClearCart(int cartId)
         {
-            var customerId = GetCustomerIdFromSession();
+            int customerId = (int) await GetCustomerIdFromSession();
             if (customerId == null)
                 return Unauthorized(new { Message = "User not logged in." });
 
@@ -120,11 +138,11 @@ namespace GourmetShop.WebApp.Controllers
         [HttpGet("cart/view")]
         //public async Task<IActionResult> ViewCart()
         //{
-        //    var customerId = GetCustomerIdFromSession();
+        //    int customerId = (int) await GetCustomerIdFromSession();
         //    if (customerId == null)
         //        return Unauthorized(new { Message = "User not logged in." });
 
-        //    int cartId = await _shoppingCartRepository.GetCartIdForCustomerAsync(customerId.Value);
+        //    int cartId = await _shoppingCartRepository.GetCartIdForCustomerAsync(customerId);
         //    var cartItems = await _shoppingCartRepository.ViewCartASync(cartId);
         //    // Pass the cart items to the view
         //    return View("ShoppingCart", cartItems);
@@ -132,7 +150,7 @@ namespace GourmetShop.WebApp.Controllers
         //}
         public async Task<IActionResult> ViewCart()
         {
-            var customerId = GetCustomerIdFromSession();
+            int customerId = (int) await GetCustomerIdFromSession();
             if (customerId == null)
             {
                 _logger.LogInformation("Session does not contain UserId.");
@@ -141,7 +159,7 @@ namespace GourmetShop.WebApp.Controllers
 
             _logger.LogInformation("UserId from session: " + customerId);
 
-            int cartId = await _shoppingCartRepository.GetCartIdForCustomerAsync(customerId.Value);
+            int cartId = await _shoppingCartRepository.GetCartIdForCustomerAsync(customerId);
             var cartItems = await _shoppingCartRepository.ViewCartASync(cartId);
             return View("ShoppingCart", cartItems);
         }
@@ -150,11 +168,11 @@ namespace GourmetShop.WebApp.Controllers
         [HttpPost("cart/place-order")]
         public async Task<IActionResult> PlaceOrder()
         {
-            var customerId = GetCustomerIdFromSession();
+            int customerId = (int) await GetCustomerIdFromSession();
             if (customerId == null)
                 return Unauthorized(new { Message = "User not logged in." });
 
-            bool success = await _shoppingCartRepository.PlaceOrderAync(customerId.Value);
+            bool success = await _shoppingCartRepository.PlaceOrderAync(customerId);
             if (success)
             {
                 // Redirect to the "OrderPlaced" view after order is successfully placed
@@ -169,11 +187,11 @@ namespace GourmetShop.WebApp.Controllers
         //[HttpPost("cart/place-order")]
         //public async Task<IActionResult> PlaceOrder()
         //{
-        //    var customerId = GetCustomerIdFromSession();
+        //    int customerId = (int) await GetCustomerIdFromSession();
         //    if (customerId == null)
         //        return Unauthorized(new { Message = "User not logged in." });
 
-        //    bool success = await _shoppingCartRepository.PlaceOrderAync(customerId.Value);
+        //    bool success = await _shoppingCartRepository.PlaceOrderAync(customerId);
         //    return success
         //        ? Ok(new { Message = "Order placed." })
         //        : BadRequest(new { Message = "Failed to place order." });

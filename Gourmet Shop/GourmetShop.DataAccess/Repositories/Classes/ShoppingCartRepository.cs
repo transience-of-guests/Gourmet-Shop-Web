@@ -42,7 +42,7 @@ namespace GourmetShop.DataAccess.Repositories
             var cartItem = await _context.ShoppingCartDetails
                 .FirstOrDefaultAsync(c => c.CartId == cart.Id && c.ProductId == productId);
 
-            if (cartItem == null)
+            if (cartItem != null)
             {
                 cartItem.Quantity += quantity;
             }
