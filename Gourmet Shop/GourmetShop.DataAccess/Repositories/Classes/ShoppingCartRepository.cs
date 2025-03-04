@@ -45,6 +45,7 @@ namespace GourmetShop.DataAccess.Repositories
             if (cartItem != null)
             {
                 cartItem.Quantity += quantity;
+                _context.ShoppingCartDetails.Update(cartItem);
             }
             else
             {
@@ -60,8 +61,9 @@ namespace GourmetShop.DataAccess.Repositories
                         
                 };
                 _context.ShoppingCartDetails.Add(cartItem);
-                await _context.SaveChangesAsync();
             }
+
+            await _context.SaveChangesAsync();
         }
         public async Task UpdateCartItemQuantity(int cartId, int productId, int newQuantity)
         {
@@ -152,8 +154,8 @@ namespace GourmetShop.DataAccess.Repositories
 
         public async Task<int> GetCartIdForCustomerAsync(int customerId)
         {
-            var cartId = await _context.ShoppingCarts
-                .Where(c => c.Id == customerId)
+           int cartId = await _context.ShoppingCarts
+                .Where(c => c.UserId == customerId)
                 .Select(c => c.Id)
                 .FirstOrDefaultAsync();
 
