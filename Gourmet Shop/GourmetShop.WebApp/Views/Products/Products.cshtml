@@ -27,7 +27,7 @@
                         <p class="card-text">Price: $@product.UnitPrice</p>
                         
                         <!-- Add to Cart button below the name -->
-                        <form method="post" action= "@Url.Action("AddToCart", "ShoppingCart")">
+                        <form method="post" action= "@Url.Action("AddToCart", "ShoppingCarts")">
                             <input type="hidden" name="productId" value="@product.Id" />
                             <input type="hidden" name="quantity" value="1" /> <!-- Default quantity to 1 -->
                             <button type="submit" class="btn btn-brown">Add to Cart</button>
