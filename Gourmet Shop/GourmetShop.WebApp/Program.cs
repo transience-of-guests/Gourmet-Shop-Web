@@ -35,6 +35,17 @@ builder.Services.AddLogging();
 builder.Services.AddDefaultIdentity<Authentication>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<GourmetShopDbContext>();
+//.AddDefaultTokenProviders();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Identity/Account/Login";
+    /*options.Events.OnRedirectToLogin = context =>
+    {
+        context.Response.StatusCode = 401;
+        return Task.CompletedTask;
+    };*/
+});
 
 // TODO: Add the necessary controllers and DI here
 //?? We have a user repository and an authentication repository. Wouldn't that be the same controller

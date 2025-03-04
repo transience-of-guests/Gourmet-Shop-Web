@@ -10,6 +10,7 @@ using GourmetShop.DataAccess.Models;
 using GourmetShop.DataAccess.Repositories;
 using GourmetShop.DataAccess.Repositories.Interfaces.CRUD_Subinterfaces;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GourmetShop.WebApp.Controllers
 {
@@ -64,14 +65,16 @@ namespace GourmetShop.WebApp.Controllers
         //}
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> AddToCart(int productId, int quantity = 1) // Default quantity to 1
         {
             var customerId = GetCustomerIdFromSession();
             
+            // Don't need this since we have Authorize
                 if (customerId == null)
                 {
-                    // Redirect to login page if user is not logged in
-                    return RedirectToAction("Login", "Account", new { area = "Identity" });
+                // Redirect to login page if user is not logged in
+                    // return RedirectToPage("/Account/Login", new { area = "Identity" });
                 }
 
             await _shoppingCartRepository.AddToCartAsync(customerId.Value, productId, quantity);
@@ -79,6 +82,7 @@ namespace GourmetShop.WebApp.Controllers
         }
 
         [HttpPost("cart/update")]
+        [Authorize]
         public async Task<IActionResult> UpdateCartItemQuantity(int cartId, int productId, int newQuantity)
         {
             var customerId = GetCustomerIdFromSession();
@@ -90,6 +94,7 @@ namespace GourmetShop.WebApp.Controllers
         }
 
         [HttpPost("cart/remove")]
+        [Authorize]
         public async Task<IActionResult> RemoveFromCart(int cartId, int productId)
         {
             var customerId = GetCustomerIdFromSession();
@@ -101,6 +106,7 @@ namespace GourmetShop.WebApp.Controllers
         }
 
         [HttpPost("cart/clear")]
+        [Authorize]
         public async Task<IActionResult> ClearCart(int cartId)
         {
             var customerId = GetCustomerIdFromSession();
