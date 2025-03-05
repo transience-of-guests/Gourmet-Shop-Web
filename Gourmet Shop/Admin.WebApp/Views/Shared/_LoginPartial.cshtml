@@ -10,7 +10,7 @@
             <a id="manage" class="nav-link font-color" asp-area="Identity" asp-page="/Products/AvailableProducts" title="Manage">Hello @UserManager.GetUserName(User)!</a>
         </li>
         <li class="nav-item">
-            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/Products/AvailableProducts">
+            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout">
                 <button id="logout" type="submit" class="nav-link btn btn-link font-color border-0">Logout</button>
             </form>
         </li>
