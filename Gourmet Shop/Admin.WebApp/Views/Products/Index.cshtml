@@ -7,7 +7,7 @@
 
 <div class="cover-container d-flex align-items-center justify-content-center text-center">
     <div class="content">
-        <h1 class="display-3 text-black Gourmet-Header-Font">Gourmet Shop Products</h1>
+        <h1 class="display-3 text-black Gourmet-Header-Font">GourmetShop Products</h1>
         
     <div class="table-responsive overflow-auto border rounded p-3" style="height: 35vh;">
             <table class="table table-striped table-bordered">
@@ -26,7 +26,7 @@
                 <tbody>
                     @foreach (var product in Model)
                     {
-                        <tr id="row-@product.Id">
+                        <tr id="row-@product.Id" onclick="selectRow@product.Id">
                             <td>@product.Id</td>
                             <td>
                                 <input type="text" class="form-control form-control-sm" 
@@ -54,21 +54,71 @@
                                 <input type ="checkbox" id="isDiscontinued-@product.Id"
                                 @(product.IsDiscontinued ? "checked": "")/>
                             </td>
+                           
 
                         </tr>
                     }
+
+                    
                 </tbody>
+               
             </table>
+            
     </div>
-       
-    <div class="fixed-product-buttons">
-            @*TODO//Make these buttons then make them do something*@
-            @*These are just here for placeholder looks*@
-			<button class="btn btn-outline-primary" onclick="addProduct()">Add Product</button>
-			<button class="btn btn-outline-success" onclick="updateProduct()">Update Product</button>
-			<button class="btn btn-outline-danger" onclick="deleteProduct()">Delete Product</button>
-			<button class="btn btn-outline-primary" onclick="searchProduct()">Search Product</button>
-    </div>
+        @*  <div class="fixed-product-buttons">
+                    @*TODO//Make these buttons then make them do something*@
+        @*These are just here for placeholder looks*@
+        <a href="@Url.Action("AddProduct", "Products")" class="btn btn-primary">Add Product</a>
+         @* <button class="btn btn-outline-primary" onclick="addProduct()">Add Product</button> *@
+        <button class="btn btn-outline-success" onclick="updateProduct()">Update Product</button>
+        <button class="btn btn-outline-danger" onclick="deleteProduct()">Delete Product</button>
+        <button class="btn btn-outline-primary" onclick="searchProduct()">Search Product</button>
+        @* </div> *@
+        
+    
         
 </div>
 </div>
+
+<script>
+    let selectedRowId = null;
+
+    function selectRow(id) {
+        selectedRowId = id;
+        document.querySelectorAll("tr").forEach(row => row.classList.remove("table-primary"));
+        document.getElementById(`row-${id}`).classList.add("table-primary");
+   
+        async function updateProduct(id) {
+        let productData = new FormData();
+        productData.append("ProductName", document.getElementById(`name-${id}`).innerText);
+        productData.append("UnitPrice", document.getElementById(`price-${id}`).innerText);
+        productData.append("Package", document.getElementById(`package-${id}`).innerText);
+        productData.append("IsDiscontinued", document.getElementById(`isDiscontinued-${id}`).checked);
+
+        let response = await fetch(`/Products/Update`, {
+            method: "POST",
+            body: productData
+        });
+
+        if (response.ok) {
+            alert("Product updated successfully!");
+        } else {
+            alert("Failed to update product.");
+        }
+    }
+
+    async function deleteProduct(id) {
+        if (!confirm("Are you sure you want to delete this product?")) return;
+
+        let response = await fetch(`/Products/Delete/${id}`, {
+            method: "POST"
+        });
+
+        if (response.ok) {
+            document.getElementById(`row-${id}`).remove();
+            alert("Product deleted successfully!");
+        } else {
+            alert("Failed to delete product.");
+        }
+    }
+</script>
