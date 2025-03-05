@@ -143,7 +143,9 @@ namespace GourmetShop.WebApp.Areas.Identity.Pages.Account
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                        //return LocalRedirect(returnUrl);
+                        // Redirect to the UserInfoForm after registration
+                        return RedirectToAction("Create", "UserInfoes");
                     }
                 }
                 foreach (var error in result.Errors)
