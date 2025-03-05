@@ -1,9 +1,5 @@
 ﻿@using GourmetShop.DataAccess.Models
 @using GourmetShop.DataAccess.Repositories
-@inject ISubCategoryRepository SubcategoryRepository
-@{
-    List<Subcategory> subcategories = (await SubcategoryRepository.GetAllAsync()).ToList();
-}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -68,19 +64,6 @@
                     </li> *@
                    </ul>
 
-                    <!-- Subcategory Dropdown -->
-                    <!--FIXME: Reloads the entire page and doesn't save the dropdown selected value, problem is if we put this in a partial form it's not going to be able to access controller functions-->
-                    <form asp-controller="Products" id = "subcategory-dropdown" asp-action="AvailableProducts">
-                        <!--<select class="dropdown-menu" name="subcategory">-->
-                        <select name="subcategoryId" onchange="this.form.submit()">
-                           <option value="">All</option>
-                            @foreach (Subcategory subcategory in subcategories)
-                            {
-                                <option value="@subcategory.Id">@subcategory.Name</option>
-                                <!--<option value="@*@subcategory.Id"*@ class="dropdown-item">@*@subcategory.Name*@</option>-->
-                            }
-                        </select>
-                    </form>
                     <partial name="_LoginPartial" /> <!-- This adds Sign In / Register links -->
                 </div>
             </div>

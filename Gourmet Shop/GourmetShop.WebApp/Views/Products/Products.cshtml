@@ -1,47 +1,58 @@
 ﻿@using GourmetShop.DataAccess.Models
-
+@using GourmetShop.DataAccess.Repositories
+@inject ISubCategoryRepository SubcategoryRepository
+@{
+    List<Subcategory> subcategories = (await SubcategoryRepository.GetAllAsync()).ToList();
+}
 
 @section Styles {
     <style>
         body {
-            background-color: #f9f7f4; /* Light brown color */
+        background-color: #f9f7f4; /* Light brown color */
         }
     </style>
 }
 
 @model IEnumerable<Product>
 
-
 <div class="container mt-4">
     <h3 class="text-center mb-4">Available Products</h3>
-    
-    <!-- Product List -->
-    <div class="row">
-        @foreach (var product in Model)  
+
+    <!-- Subcategory Dropdown -->
+    <select id="subcategory-dropdown">
+        <option value="">All</option>
+        @foreach (Subcategory subcategory in subcategories)
         {
-            <div class="col-md-4 mb-4">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <!-- Product name in the center -->
-                        <h5 class="card-title">@product.ProductName</h5>
-                        <p class="card-text">Price: $@product.UnitPrice</p>
-                        
-                        <!-- Add to Cart button below the name -->
-                        <form method="post" action= "@Url.Action("AddToCart", "ShoppingCarts")">
-                            <input type="hidden" name="productId" value="@product.Id" />
-                            <input type="hidden" name="quantity" value="1" /> <!-- Default quantity to 1 -->
-                            <button type="submit" class="btn btn-brown">Add to Cart</button>
-                        </form>
-               @*          <form method="post" action="@Url.Action("AddToCart", "ShoppingCart")">
-                            <input type="hidden" name="productId" value="@product.Id" />
-                            <button type="submit" class="btn btn-brown">Add to Cart</button>
-                        </form> *@
-                    </div>
-                </div>
-            </div>
+            <option value="@subcategory.Id">@subcategory.Name</option>
+        }
+    </select>
+
+    <!-- Product List -->
+    <!--FIXME: All items don't appear on initial-->
+    <div class="row" id="product-list-container">
+        @{
+            await Html.PartialAsync("_ProductsList", Model);
         }
     </div>
 </div>
+
+
+<script>
+    // Get the subcategory dropdown element
+    var subcategoryDropdown = document.getElementById("subcategory-dropdown").addEventListener("change", function() {
+    // Get the selected value of the dropdown
+    var subcategoryId = this.value;
+
+    fetch(`/Products/AvailableProductsBySubcategory?subcategoryId=${subcategoryId}`)
+        .then(response => response.text())
+        .then(data => {
+        document.getElementById("product-list-container").innerHTML = data;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    });
+</script>
 
 
 

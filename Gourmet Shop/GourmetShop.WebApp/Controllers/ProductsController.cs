@@ -25,8 +25,8 @@ namespace GourmetShop.WebApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var books = await _productRepository.GetAllAsync();
-            return View(books);
+            var products = await _productRepository.GetAllAsync();
+            return View(products);
         }
 
         public async Task<IActionResult> Details(int id)
@@ -131,7 +131,7 @@ namespace GourmetShop.WebApp.Controllers
         //    return View(products);
         //}
 
-        public async Task<IActionResult> AvailableProducts(int? subcategoryId)
+        public async Task<IActionResult> AvailableProducts()
         {
 
             // Hardcoded products for testing purposes
@@ -144,11 +144,18 @@ namespace GourmetShop.WebApp.Controllers
             ViewData["Subcategories"] = subcategories;
 
             // Get available products, filtered by subcategory if provided
-            var products = subcategoryId.HasValue
-                ? await _subcategoryRepository.GetProductsBySubcategoryAsync(subcategoryId.Value)
-                : await _productRepository.GetAvailableProductsForCust();  // Or get all available products if no filter is applied
+            List<Product> products =  (await _productRepository.GetAvailableProductsForCust()).ToList();  // Or get all available products if no filter is applied
 
             return View("Products", products);
+        }
+
+        public async Task<IActionResult> AvailableProductsBySubcategory(int? subcategoryId)
+        {
+
+            List<Product> products = subcategoryId.HasValue
+                ? (await _subcategoryRepository.GetProductsBySubcategoryAsync(subcategoryId.Value)).ToList()
+                : (await _productRepository.GetAvailableProductsForCust()).ToList();  // Or get all available products if no filter is applied
+            return PartialView("_ProductsList", products);
         }
 
         //    public async Task<IActionResult> AvailableProducts(int? subcategoryId)
