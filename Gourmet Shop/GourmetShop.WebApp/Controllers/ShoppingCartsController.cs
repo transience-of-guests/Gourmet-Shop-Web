@@ -45,6 +45,8 @@ namespace GourmetShop.WebApp.Controllers
 
             if (authId != null)
             {
+                // FIXME
+                // Need to create a user info when you register the user, otherwise there will be a bug where you can't get that
                 UserInfo? userInfo = await _userInfoRepository.GetByAuthenticationIdAsync(authId);
 
                 if (userInfo != null)
@@ -83,7 +85,7 @@ namespace GourmetShop.WebApp.Controllers
         //}
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> AddToCart(int productId, int quantity = 1) // Default quantity to 1
         {
             int customerId = (int) await GetCustomerIdFromSession();
@@ -93,7 +95,7 @@ namespace GourmetShop.WebApp.Controllers
         }
 
         [HttpPost("cart/update")]
-        [Authorize]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> UpdateCartItemQuantity(int cartId, int productId, int newQuantity)
         {
             int customerId = (int) await GetCustomerIdFromSession();
@@ -103,7 +105,7 @@ namespace GourmetShop.WebApp.Controllers
         }
 
         [HttpPost("cart/remove")]
-        [Authorize]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> RemoveFromCart(int cartId, int productId)
         {
             int customerId = (int) await GetCustomerIdFromSession();
@@ -113,7 +115,7 @@ namespace GourmetShop.WebApp.Controllers
         }
 
         [HttpPost("cart/clear")]
-        [Authorize]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> ClearCart(int cartId)
         {
             int customerId = (int) await GetCustomerIdFromSession();
@@ -123,7 +125,7 @@ namespace GourmetShop.WebApp.Controllers
         }
 
         [HttpGet("cart/view")]
-        [Authorize]
+        [Authorize(Roles = "Customer")]
         //public async Task<IActionResult> ViewCart()
         //{
         //    int customerId = (int) await GetCustomerIdFromSession();
@@ -147,7 +149,7 @@ namespace GourmetShop.WebApp.Controllers
 
 
         [HttpPost("cart/place-order")]
-        [Authorize]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> PlaceOrder()
         {
             int customerId = (int) await GetCustomerIdFromSession();

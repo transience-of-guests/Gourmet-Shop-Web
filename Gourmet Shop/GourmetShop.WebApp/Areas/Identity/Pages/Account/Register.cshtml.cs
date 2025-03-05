@@ -122,6 +122,9 @@ namespace GourmetShop.WebApp.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
+                    // AUTOMATICALLY ASSIGNS TO BE A CUSTOMER
+                    await _userManager.AddToRoleAsync(user, "Customer");
+
                     _logger.LogInformation("UserInfo created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
