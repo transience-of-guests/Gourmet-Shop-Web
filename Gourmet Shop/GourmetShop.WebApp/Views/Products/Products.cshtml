@@ -28,7 +28,7 @@
     </select>
 
     <!-- Product List -->
-    <!--FIXME: All items don't appear on initial-->
+    <!--FIXME: All items don't appear on initial, refer to script for workaround-->
     <div class="row" id="product-list-container">
         @{
             await Html.PartialAsync("_ProductsList", Model);
@@ -38,19 +38,27 @@
 
 
 <script>
-    // Get the subcategory dropdown element
-    var subcategoryDropdown = document.getElementById("subcategory-dropdown").addEventListener("change", function() {
-    // Get the selected value of the dropdown
-    var subcategoryId = this.value;
-
-    fetch(`/Products/AvailableProductsBySubcategory?subcategoryId=${subcategoryId}`)
-        .then(response => response.text())
-        .then(data => {
-        document.getElementById("product-list-container").innerHTML = data;
+    // Temporary workaround for the initial products loading
+	function loadAvailableProducts(subcategoryId) {
+         fetch(`/Products/AvailableProductsBySubcategory?subcategoryId=${subcategoryId}`)
+            .then(response => response.text())
+            .then(data => {
+            document.getElementById("product-list-container").innerHTML = data;
         })
         .catch(error => {
             console.error(error);
         });
+	}
+
+    // Load all products on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        loadAvailableProducts();
+    });
+
+    // EVENT LISTENERS
+    // Get the subcategory dropdown element
+    document.getElementById("subcategory-dropdown").addEventListener("change", function() {
+        loadAvailableProducts(this.value);
     });
 </script>
 
