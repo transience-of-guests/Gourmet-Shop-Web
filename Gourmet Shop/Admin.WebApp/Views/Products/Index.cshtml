@@ -26,7 +26,7 @@
                 <tbody>
                     @foreach (var product in Model)
                     {
-                        <tr id="row-@product.Id" onclick="selectRow@product.Id">
+                        <tr id="row-@product.Id" onclick="selectRow(@product.Id)">
                             <td>@product.Id</td>
                             <td>
                                 <input type="text" class="form-control form-control-sm" 
@@ -34,8 +34,12 @@
                                 value="@product.ProductName" 
                                 maxlength="50" required />
                             </td>
-                            <td>@product.Subcategory.Name</td>
-                            <td>@product.Supplier.CompanyName</td>
+                            <td>@product.Subcategory.Name
+                                <input type="hidden" id="subcategory-@product.Id" value="@product.SubcategoryId" />
+                            </td>
+                            <td>@product.Supplier.CompanyName
+                                <input type="hidden" id="supplier-@product.Id" value="@product.SupplierId" />
+                            </td>
                             <td>
                                 <input type="number" 
                                     class="form-control form-control-sm"
@@ -65,46 +69,89 @@
             </table>
             
     </div>
-        @*  <div class="fixed-product-buttons">
-                    @*TODO//Make these buttons then make them do something*@
-        @*These are just here for placeholder looks*@
-        <a href="@Url.Action("AddProduct", "Products")" class="btn btn-primary">Add Product</a>
-         @* <button class="btn btn-outline-primary" onclick="addProduct()">Add Product</button> *@
-        <button class="btn btn-outline-success" onclick="updateProduct()">Update Product</button>
-        <button class="btn btn-outline-danger" onclick="deleteProduct()">Delete Product</button>
-        <button class="btn btn-outline-primary" onclick="searchProduct()">Search Product</button>
-        @* </div> *@
+        <div class = mt-3>
+            <button class="btn btn-dark rounded-pill mt-2" onclick="window.location.href='@Url.Action("AddProduct", "Products")'">
+                Add Product
+            </button>
+
+            <button class="btn btn-dark rounded-pill mt-2 update-product-button" onclick="updateProduct(selectedRowId)">Update Product</button>
+
+            <button class="btn btn-dark rounded-pill mt-2" onclick="deleteProduct()">Delete Product</button>
+            <button class="btn btn-dark rounded-pill mt-2" onclick="searchProduct()">Search Product</button>
+
+        </div>
         
+        
+        
+        <div id="updateMessage" class="alert" style="display:none;"></div>
     
         
 </div>
 </div>
 
 <script>
+
+    function showMessage(message, alertClass) {
+        const messageDiv = document.getElementById("updateMessage");
+        messageDiv.textContent = message;
+        messageDiv.className = `alert ${alertClass}`;
+        messageDiv.style.display = "block";
+        setTimeout(() => {
+            messageDiv.style.display = "none";
+        }, 3000);
+    }
+
     let selectedRowId = null;
 
     function selectRow(id) {
         selectedRowId = id;
         document.querySelectorAll("tr").forEach(row => row.classList.remove("table-primary"));
         document.getElementById(`row-${id}`).classList.add("table-primary");
-   
-        async function updateProduct(id) {
-        let productData = new FormData();
-        productData.append("ProductName", document.getElementById(`name-${id}`).innerText);
-        productData.append("UnitPrice", document.getElementById(`price-${id}`).innerText);
-        productData.append("Package", document.getElementById(`package-${id}`).innerText);
-        productData.append("IsDiscontinued", document.getElementById(`isDiscontinued-${id}`).checked);
+        console.log("Row selected, id:", id);
+    }
 
-        let response = await fetch(`/Products/Update`, {
-            method: "POST",
-            body: productData
-        });
+    async function updateProduct(id) {
+          console.log("updateProduct called with id:", id);
+      if (!id) {
+          alert("No row selected.");
+          return;
+      }
 
-        if (response.ok) {
-            alert("Product updated successfully!");
-        } else {
-            alert("Failed to update product.");
-        }
+      let productData = new FormData();
+      productData.append("Id", id);
+      productData.append("ProductName", document.getElementById(`name-${id}`).value);
+      productData.append("UnitPrice", document.getElementById(`price-${id}`).value);
+      productData.append("Package", document.getElementById(`package-${id}`).value);
+      productData.append("IsDiscontinued", document.getElementById(`isDiscontinued-${id}`).checked);
+
+      
+      let supplierElem = document.getElementById(`supplier-${id}`);
+      let subcategoryElem = document.getElementById(`subcategory-${id}`);
+      if (supplierElem && subcategoryElem) {
+          productData.append("SupplierId", supplierElem.value);
+          productData.append("SubcategoryId", subcategoryElem.value);
+      } else {
+          console.error("Supplier and/or Subcategory not found for product:", id);
+      }
+
+      try {
+          let response = await fetch(`/Products/Update`, {
+              method: "POST",
+              body: productData
+          });
+          
+          if (response.ok) {
+              showMessage("Product updated!");
+			  setTimeout(() => {
+				  window.location.reload();
+			  }, 1500);
+          } else {
+              showMessage("No updates made. Status: " + response.status);
+          }
+      } catch (error) {
+          
+          showMessage("Error updating product: " + error.message);
+      }
     }
 
     async function deleteProduct(id) {
