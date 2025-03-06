@@ -62,8 +62,14 @@
 <h2 class="Headerstyle">Complete Your Profile</h2>
 
 <form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
     <!-- Hidden field to store AuthenticationId -->
-    <input type="hidden" asp-for="AuthenticationId" value="@ViewBag.AuthUserId" />
+    @* <input type="hidden" asp-for="AuthenticationId" value="@ViewBag.AuthUserId" /> *@
+   @*  <input type="hidden" asp-for="AuthenticationId" value="@Model.AuthenticationId" /> *@
+    <!-- Hidden field to store AuthenticationId -->
+@*     <input type="hidden" asp-for="AuthenticationId" /> *@
+    <input type="hidden" asp-for="AuthenticationId" value="@Model.AuthenticationId" />
+
 
     <div class="form-group font-style">
         <label asp-for="FirstName"></label>
@@ -91,3 +97,16 @@
 
     <button type="submit" class="btn btn-primary btn-brown mt-3">Save</button>
 </form>
+
+@* Display validation errors if any *@
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger mt-3">
+        <ul>
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
+    </div>
+}
