@@ -64,9 +64,14 @@ namespace Admin.WebApp.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Update([FromBody] Product product)
+        public async Task<IActionResult> Update([FromForm] Product product)
         {
             if (product == null) return BadRequest("Invalid product data.");
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest($"Model state is invalid" + ModelState);
+            }
 
             await _productRepository.UpdateAsync(product);
             return Ok(new { message = "Product updated" });
@@ -81,7 +86,10 @@ namespace Admin.WebApp.Controllers
             await _productRepository.DeleteAsync(id);
             return Ok(new { message = "Product deleted" });
         }
+
+       
     }
+
 
     
     
