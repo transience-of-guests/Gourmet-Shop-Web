@@ -88,6 +88,7 @@ namespace GourmetShop.WebApp.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> AddToCart(int productId, int quantity = 1) // Default quantity to 1
         {
+            //NEED TO REDIRECT THEM TO LOGIN IF NOT LOGGED IN
             int customerId = (int) await GetCustomerIdFromSession();
 
             await _shoppingCartRepository.AddToCartAsync(customerId, productId, quantity);

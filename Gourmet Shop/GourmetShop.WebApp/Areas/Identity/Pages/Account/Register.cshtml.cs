@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
+using GourmetShop.DataAccess.Data;
 using GourmetShop.DataAccess.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -19,6 +20,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace GourmetShop.WebApp.Areas.Identity.Pages.Account
@@ -31,13 +33,15 @@ namespace GourmetShop.WebApp.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<Authentication> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly GourmetShopDbContext _context;
 
         public RegisterModel(
             UserManager<Authentication> userManager,
             IUserStore<Authentication> userStore,
             SignInManager<Authentication> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            GourmetShopDbContext context)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -45,6 +49,7 @@ namespace GourmetShop.WebApp.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
         }
 
         /// <summary>
@@ -108,6 +113,71 @@ namespace GourmetShop.WebApp.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
+        //public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        //{
+        //    returnUrl ??= Url.Content("~/");
+        //    ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+        //    if (ModelState.IsValid)
+        //    {
+        //        var user = CreateUser();
+
+        //        await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+        //        await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+        //        var result = await _userManager.CreateAsync(user, Input.Password);
+
+        //        if (result.Succeeded)
+        //        {
+        //            // AUTOMATICALLY ASSIGNS TO BE A CUSTOMER
+        //            await _userManager.AddToRoleAsync(user, "Customer");
+
+        //            _logger.LogInformation("UserInfo created a new account with password.");
+        //            //Yareni Added this
+        //            user.EmailConfirmed = true;
+        //            await _userManager.UpdateAsync(user);
+
+        //            var userInfo = _context.UserInfo.FirstOrDefault(u => u.AuthenticationId == user.Id);
+
+        //            if (userInfo != null && string.IsNullOrEmpty(userInfo.AuthenticationId))
+        //            {
+        //                userInfo.AuthenticationId = user.Id; // Set AuthenticationId to match UserId
+        //                await _context.SaveChangesAsync(); // Save changes to the database
+        //            }
+
+        //            var userId = await _userManager.GetUserIdAsync(user);
+        //            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        //            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+        //            var callbackUrl = Url.Page(
+        //                "/Account/ConfirmEmail",
+        //                pageHandler: null,
+        //                values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
+        //                protocol: Request.Scheme);
+
+        //            await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+        //                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+        //            if (_userManager.Options.SignIn.RequireConfirmedAccount)
+        //            {
+        //                return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+        //            }
+        //            else
+        //            {
+        //                await _signInManager.SignInAsync(user, isPersistent: false);
+        //                //return LocalRedirect(returnUrl);
+        //                // Redirect to the UserInfoForm after registration
+        //                return RedirectToAction("Create", "UserInfoes");
+        //            }
+        //        }
+        //        foreach (var error in result.Errors)
+        //        {
+        //            ModelState.AddModelError(string.Empty, error.Description);
+        //        }
+        //    }
+
+        //    // If we got this far, something failed, redisplay form
+        //    return Page();
+        //}
+
+
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
@@ -125,7 +195,50 @@ namespace GourmetShop.WebApp.Areas.Identity.Pages.Account
                     // AUTOMATICALLY ASSIGNS TO BE A CUSTOMER
                     await _userManager.AddToRoleAsync(user, "Customer");
 
-                    _logger.LogInformation("UserInfo created a new account with password.");
+                    _logger.LogInformation("User created a new account with password.");
+
+                    // Automatically confirm the email for the user
+                    user.EmailConfirmed = true;
+                    await _userManager.UpdateAsync(user);
+
+
+                    // After user creation, ensure AuthenticationId is set in UserInfo table
+                    //var userInfo = _context.UserInfo.FirstOrDefault(u => u.AuthenticationId == user.Id);
+
+                    //if (userInfo != null && string.IsNullOrEmpty(userInfo.AuthenticationId))
+                    //{
+                    //    userInfo.AuthenticationId = user.Id; // Set AuthenticationId to match UserId
+                    //    await _context.SaveChangesAsync(); // Save changes to the database
+                    //}
+
+                    //else if (string.IsNullOrEmpty(userInfo.AuthenticationId))
+                    //{
+                    //    // If UserInfo exists but AuthenticationId is empty, update it
+                    //    userInfo.AuthenticationId = user.Id;
+                    //    await _context.SaveChangesAsync(); // Save changes to the database
+                    //}
+                    var userInfo = _context.Users.FirstOrDefault(u => u.AuthenticationId == user.Id);
+
+                    if (userInfo != null)
+                    {
+                        // If UserInfo exists and AuthenticationId is empty, update it
+                        if (string.IsNullOrEmpty(userInfo.AuthenticationId))
+                        {
+                            userInfo.AuthenticationId = user.Id;
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                    //else
+                    //{
+                    //    // If UserInfo does not exist, create a new UserInfo
+                    //    userInfo = new UserInfo
+                    //    {
+                    //        AuthenticationId = user.Id,
+                    //        // Initialize other properties of UserInfo as needed
+                    //    };
+                    //    _context.UserInfo.Add(userInfo);
+                    //    await _context.SaveChangesAsync(); // Save new UserInfo
+                    //}
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -146,11 +259,12 @@ namespace GourmetShop.WebApp.Areas.Identity.Pages.Account
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
-                        //return LocalRedirect(returnUrl);
-                        // Redirect to the UserInfoForm after registration
+                        // Redirect to the UserInfo form after registration
                         return RedirectToAction("Create", "UserInfoes");
                     }
                 }
+
+                // If registration failed, add the errors to the model
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
@@ -160,6 +274,7 @@ namespace GourmetShop.WebApp.Areas.Identity.Pages.Account
             // If we got this far, something failed, redisplay form
             return Page();
         }
+
 
         private Authentication CreateUser()
         {
