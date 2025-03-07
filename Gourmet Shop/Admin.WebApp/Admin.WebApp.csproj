@@ -8,6 +8,30 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="..\GourmetShop.DataAccess\Data\SeedData\Authentication.json" Link="Authentication.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\GourmetShop.DataAccess\Data\SeedData\Categories.json" Link="Categories.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\GourmetShop.DataAccess\Data\SeedData\Products.json" Link="Products.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\GourmetShop.DataAccess\Data\SeedData\Subcategories.json" Link="Subcategories.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\GourmetShop.DataAccess\Data\SeedData\Suppliers.json" Link="Suppliers.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\GourmetShop.DataAccess\Data\SeedData\UserRoles.json" Link="UserRoles.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\GourmetShop.DataAccess\Data\SeedData\Users.json" Link="Users.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.1" />
