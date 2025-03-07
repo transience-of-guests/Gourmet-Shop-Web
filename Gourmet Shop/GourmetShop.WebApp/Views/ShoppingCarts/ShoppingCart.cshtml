@@ -16,10 +16,10 @@ else
               @*   <img src="@item.Product.ImageUrl" alt="@item.Product.ProductName" class="product-image" /> *@
                 <div class="product-details">
                     <p><strong>@item.Product.ProductName</strong></p>
-                    <p>@item.Price.ToString("C")</p>
-                    <p>Total: @((item.Quantity * item.Price).ToString("C"))</p>
-                    <!-- <p id="price-@item.ProductId">@item.Price.ToString("C")</p> -->
-                    <!-- <p>Total: <span id="total-@item.ProductId"> @((item.Quantity * item.Price).ToString("C")) </span></p> -->
+                    <!--<p>@*item.Price.ToString("C")</p>*@-->
+                    <!--<p>Total: @*((item.Quantity * item.Price).ToString("C"))*@</p>-->
+                    <p id="price-@item.ProductId">@item.Price.ToString("C")</p>
+                    <p>Total: <span id="total-@item.ProductId"> @((item.Quantity * item.Price).ToString("C")) </span></p>
                 </div>
 
                 <!-- Quantity Up/Down input -->
@@ -61,11 +61,28 @@ else
         var newQuantity = parseInt(quantityInput.value);
 
         if (newQuantity >= 1) {
-            // Make an AJAX request to update the quantity in the cart
-            $.post('/ShoppingCarts/cart/update', { productId: productId, newQuantity: newQuantity }, function(response) {
-                console.log('Quantity updated');
-            });
-            /*
+             $.get('/cart/get-cart-id')
+			     .then(data => {
+                     var cartId = 0;
+                     console.log('Data: ', data);
+                     return cartId = data.cartId;
+                 })
+                 .then(cartId => {
+                     console.log('Cart ID: ', cartId);
+
+                     if (cartId < 1) {
+                        throw new Error('cartId is impossible');
+                    }
+
+                    return $.post('/cart/update', { cartId: cartId, productId: productId, newQuantity: newQuantity });
+                 })
+				 .then (response => {
+					 console.log('Quantity updated');
+				 })
+		        .catch(error => {
+			        console.error(error);
+		        });
+
             // Update total price in the UI
             var pricePerUnit = parseFloat(document.getElementById('price-' + productId).innerText.replace('$', ''));
             var totalPriceElement = document.getElementById('total-' + productId);
@@ -73,10 +90,9 @@ else
 
             // Optionally update the overall cart total if displayed
             updateCartTotal();
-            */
         }
     }
-    /*
+
     function updateCartTotal() {
         var total = 0;
         document.querySelectorAll('[id^="total-"]').forEach(function (element) {
@@ -84,7 +100,6 @@ else
         });
         document.getElementById('cart-total').innerText = '$' + total.toFixed(2);
     }
-    */
 
     // Handle item removal from the cart
     function removeFromCart(cartId, productId) {

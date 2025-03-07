@@ -59,13 +59,10 @@ namespace GourmetShop.WebApp.Controllers
         }
 
         [HttpGet("cart/get-cart-id")]
-        [Authorize]
+        [Authorize(Roles ="Customer")]
         public async Task<IActionResult> GetCartId()
         {
             int customerId = (int) await GetCustomerIdFromSession();
-
-            if (customerId == null)
-                return Unauthorized(new { Message = "User not logged in." });
 
             int cartId = await _shoppingCartRepository.GetCartIdForCustomerAsync(customerId);
             return Ok(new { CartId = cartId });

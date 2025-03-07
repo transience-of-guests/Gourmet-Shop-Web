@@ -73,6 +73,7 @@ namespace GourmetShop.DataAccess.Repositories
             if(cartItem != null)
             {
                 cartItem.Quantity = newQuantity;
+                _context.Entry(cartItem).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
         }
