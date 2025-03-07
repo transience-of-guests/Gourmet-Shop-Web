@@ -18,6 +18,8 @@ else
                     <p><strong>@item.Product.ProductName</strong></p>
                     <p>@item.Price.ToString("C")</p>
                     <p>Total: @((item.Quantity * item.Price).ToString("C"))</p>
+                    <!-- <p id="price-@item.ProductId">@item.Price.ToString("C")</p> -->
+                    <!-- <p>Total: <span id="total-@item.ProductId"> @((item.Quantity * item.Price).ToString("C")) </span></p> -->
                 </div>
 
                 <!-- Quantity Up/Down input -->
@@ -63,8 +65,26 @@ else
             $.post('/ShoppingCarts/cart/update', { productId: productId, newQuantity: newQuantity }, function(response) {
                 console.log('Quantity updated');
             });
+            /*
+            // Update total price in the UI
+            var pricePerUnit = parseFloat(document.getElementById('price-' + productId).innerText.replace('$', ''));
+            var totalPriceElement = document.getElementById('total-' + productId);
+            totalPriceElement.innerText = '$' + (newQuantity * pricePerUnit).toFixed(2);
+
+            // Optionally update the overall cart total if displayed
+            updateCartTotal();
+            */
         }
     }
+    /*
+    function updateCartTotal() {
+        var total = 0;
+        document.querySelectorAll('[id^="total-"]').forEach(function (element) {
+            total += parseFloat(element.innerText.replace('$', ''));
+        });
+        document.getElementById('cart-total').innerText = '$' + total.toFixed(2);
+    }
+    */
 
     // Handle item removal from the cart
     function removeFromCart(cartId, productId) {

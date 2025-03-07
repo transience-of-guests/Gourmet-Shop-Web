@@ -37,16 +37,6 @@ builder.Services.AddDefaultIdentity<Authentication>(options => options.SignIn.Re
     .AddEntityFrameworkStores<GourmetShopDbContext>();
 //.AddDefaultTokenProviders();
 
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.LoginPath = "/Identity/Account/Login";
-    /*options.Events.OnRedirectToLogin = context =>
-    {
-        context.Response.StatusCode = 401;
-        return Task.CompletedTask;
-    };*/
-});
-
 // TODO: Add the necessary controllers and DI here
 //?? We have a user repository and an authentication repository. Wouldn't that be the same controller
 //that would redirect them to their respective pages?
@@ -94,16 +84,16 @@ builder.Services.AddSession(options =>
 // Configure Application Cookie with Logger
 builder.Services.ConfigureApplicationCookie(options =>
 {
+    options.LoginPath = "/Identity/Account/Login";
     options.Events.OnSignedIn = async context =>
     {
         var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<Authentication>>();
         var user = await userManager.GetUserAsync(context.Principal);
         var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
-
+        var signInManager = context.HttpContext.RequestServices.GetRequiredService<SignInManager<Authentication>>();
         if (user != null)
         {
             var dbContext = context.HttpContext.RequestServices.GetRequiredService<GourmetShopDbContext>();
-
             // Retrieve the corresponding UserInfo record
             var userInfo = await dbContext.Users.FirstOrDefaultAsync(u => u.AuthenticationId == user.Id);
             if (userInfo != null)
@@ -111,19 +101,19 @@ builder.Services.ConfigureApplicationCookie(options =>
                 context.HttpContext.Session.SetInt32("UserId", userInfo.Id);
 
                 // Log the UserId being set in the session
-               /* var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>(); */// Get the logger
+                /* var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>(); */// Get the logger
                 logger.LogInformation("UserId set in session: " + userInfo.Id);
             }
             else
             {
                 logger.LogWarning("UserInfo not found for user: " + user.UserName);
             }
-            }
-            else
-            {
-                logger.LogWarning("User is not authenticated.");
-            }
-        
+        }
+        else
+        {
+            logger.LogWarning("User is not authenticated.");
+            await signInManager.SignOutAsync();
+        }
     };
 });
 

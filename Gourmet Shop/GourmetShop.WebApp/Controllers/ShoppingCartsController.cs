@@ -124,8 +124,6 @@ namespace GourmetShop.WebApp.Controllers
             return Ok(new { Message = "Cart has been cleared." });
         }
 
-        [HttpGet("cart/view")]
-        [Authorize(Roles = "Customer")]
         //public async Task<IActionResult> ViewCart()
         //{
         //    int customerId = (int) await GetCustomerIdFromSession();
@@ -138,6 +136,9 @@ namespace GourmetShop.WebApp.Controllers
         //    return View("ShoppingCart", cartItems);
         //    //return Ok(cartItems);
         //}
+
+        [HttpGet("cart/view")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> ViewCart()
         {
             int customerId = (int) await GetCustomerIdFromSession();
