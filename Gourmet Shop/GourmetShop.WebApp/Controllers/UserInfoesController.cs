@@ -230,7 +230,7 @@ namespace GourmetShop.WebApp.Controllers
                 // CHECKME: Was getting an error of DbUpdateConcurrencyException: The database operation was expected to affect 1 row(s), but actually affected 0 row(s); data may have been modified or deleted since entities were loaded. See https://go.microsoft.com/fwlink/?LinkId=527962 for information on understanding and handling optimistic concurrency exceptions.
                 
                 existingUser.FirstName = userInfo.FirstName;
-                existingUser.FirstName = userInfo.LastName;
+                existingUser.LastName = userInfo.LastName;
                 existingUser.City = userInfo.City;
                 existingUser.Country = userInfo.Country;
 
