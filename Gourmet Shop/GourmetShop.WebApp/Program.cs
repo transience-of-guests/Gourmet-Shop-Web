@@ -105,7 +105,7 @@ builder.Services.ConfigureApplicationCookie(options =>
             var dbContext = context.HttpContext.RequestServices.GetRequiredService<GourmetShopDbContext>();
 
             // Retrieve the corresponding UserInfo record
-            var userInfo = await dbContext.UserInfo.FirstOrDefaultAsync(u => u.AuthenticationId == user.Id);
+            var userInfo = await dbContext.Users.FirstOrDefaultAsync(u => u.AuthenticationId == user.Id);
             if (userInfo != null)
             {
                 context.HttpContext.Session.SetInt32("UserId", userInfo.Id);

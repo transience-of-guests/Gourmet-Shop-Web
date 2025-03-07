@@ -160,6 +160,7 @@ namespace GourmetShop.WebApp.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Create()
         {
             // Get the authentication ID of the currently logged-in user
@@ -178,24 +179,31 @@ namespace GourmetShop.WebApp.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+            // The user does not have a UserInfo record, so create one
+            // It's because in case if the user doesn't actually fill out their information, we can still have a record of them
+            await _userInfoRepository.AddAsync(new UserInfo { AuthenticationId = authId, FirstName="", LastName="", City="", Country="" });
+            UserInfo user = await _userInfoRepository.GetByAuthenticationIdAsync(authId);
+
             // Pass the AuthenticationId to the view so the user can fill out their info
             ViewBag.AuthUserId = authId;
-            return View(new UserInfo { AuthenticationId = authId }); // Pre-populate the AuthenticationId field
+            return View(user); // Pre-populate the AuthenticationId field
         }
 
         // POST: Create UserInfo
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Create(UserInfo userInfo)
         {
-            if (!ModelState.IsValid)
+            // Model state will always be invalid since we're actually not using a model
+            /*if (!ModelState.IsValid)
             {
                 // Log validation errors
                 var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
                 Console.WriteLine("Validation Errors: " + string.Join(", ", errors));
                 return View(userInfo);
-            }
+            }*/
 
             // Ensure AuthenticationId is populated from the authenticated user if it's not already set
             if (string.IsNullOrEmpty(userInfo.AuthenticationId) && User.Identity.IsAuthenticated)
@@ -208,22 +216,31 @@ namespace GourmetShop.WebApp.Controllers
                 return RedirectToAction("Login", "Account"); // Redirect if no AuthenticationId is found
             }
 
-            // Verify if the AuthenticationId exists in the Users table and assign it
-            //var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == userInfo.AuthenticationId);
-            if (existingUser != null)
+            try
             {
-                userInfo.AuthenticationId = existingUser.Id; // Set AuthenticationId to match the user ID
+                // Verify if the AuthenticationId exists in the Users table and assign it
+                var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.AuthenticationId == userInfo.AuthenticationId);
+                if (existingUser == null)
+                    throw new Exception("User not found.");
+
+                userInfo.AuthenticationId = existingUser.AuthenticationId; // Set AuthenticationId to match the user ID
+
+                // Add UserInfo to the database
+                // await _userInfoRepository.AddAsync(userInfo);
+                // CHECKME: Was getting an error of DbUpdateConcurrencyException: The database operation was expected to affect 1 row(s), but actually affected 0 row(s); data may have been modified or deleted since entities were loaded. See https://go.microsoft.com/fwlink/?LinkId=527962 for information on understanding and handling optimistic concurrency exceptions.
+                
+                existingUser.FirstName = userInfo.FirstName;
+                existingUser.FirstName = userInfo.LastName;
+                existingUser.City = userInfo.City;
+                existingUser.Country = userInfo.Country;
+
+                await _userInfoRepository.UpdateAsync(existingUser);
             }
-            else
+            catch (Exception ex)
             {
-                // If the user is not found in the database, return an error or redirect
-                ModelState.AddModelError(string.Empty, "User not found.");
+                ModelState.AddModelError(string.Empty, ex.Message);
                 return View(userInfo);
             }
-
-            // Add UserInfo to the database
-            await _userInfoRepository.AddAsync(userInfo);
-
             // Redirect after successful creation
             return RedirectToAction("AvailableProducts", "Products");
         }

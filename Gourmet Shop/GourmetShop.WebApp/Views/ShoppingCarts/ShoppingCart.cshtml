@@ -17,7 +17,7 @@ else
                 <div class="product-details">
                     <p><strong>@item.Product.ProductName</strong></p>
                     <p>@item.Price.ToString("C")</p>
-                    <p>Total: @(item.Quantity * item.Price).ToString("C")</p>
+                    <p>Total: @((item.Quantity * item.Price).ToString("C"))</p>
                 </div>
 
                 <!-- Quantity Up/Down input -->
