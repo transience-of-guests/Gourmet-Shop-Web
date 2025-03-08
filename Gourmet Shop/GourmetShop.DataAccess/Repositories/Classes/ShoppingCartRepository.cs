@@ -124,12 +124,14 @@ namespace GourmetShop.DataAccess.Repositories
 
             decimal totalPrice = cart.ShoppingCartDetails.Sum(c => c.Price * c.Quantity); // FIXED!
 
+            
            
             var order = new Order
             {
                 UserId = customerId,
                 OrderDate = DateTime.UtcNow,
-                TotalAmount = totalPrice 
+                TotalAmount = totalPrice ,
+                OrderNumber = await GenerateUniqueOrderNumberAsync() // Ensures uniqueness
             };
 
             _context.Orders.Add(order);
@@ -163,8 +165,28 @@ namespace GourmetShop.DataAccess.Repositories
             return cartId;
         }
 
-       
 
+
+        private async Task<string> GenerateUniqueOrderNumberAsync()
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+
+            string orderNumber;
+            bool exists;
+
+            do
+            {
+                orderNumber = new string(Enumerable.Repeat(chars, 10)
+                    .Select(s => s[random.Next(s.Length)]).ToArray());
+
+                // Check if order number already exists
+                exists = await _context.Orders.AnyAsync(o => o.OrderNumber == orderNumber);
+
+            } while (exists); // Keep generating if it already exists
+
+            return orderNumber;
+        }
 
 
 

@@ -58,15 +58,29 @@ namespace GourmetShop.WebApp.Controllers
             return customerId;
         }
 
+        //[HttpGet("cart/get-cart-id")]
+        //[Authorize(Roles ="Customer")]
+        //public async Task<IActionResult> GetCartId()
+        //{
+        //    int customerId = (int) await GetCustomerIdFromSession();
+
+        //    int cartId = await _shoppingCartRepository.GetCartIdForCustomerAsync(customerId);
+        //    return Ok(new { CartId = cartId });
+        //}
         [HttpGet("cart/get-cart-id")]
-        [Authorize(Roles ="Customer")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetCartId()
         {
-            int customerId = (int) await GetCustomerIdFromSession();
+            int? customerId = await GetCustomerIdFromSession();
+            if (customerId == null)
+            {
+                return BadRequest(new { Message = "User not logged in." });
+            }
 
-            int cartId = await _shoppingCartRepository.GetCartIdForCustomerAsync(customerId);
+            int cartId = await _shoppingCartRepository.GetCartIdForCustomerAsync(customerId.Value);
             return Ok(new { CartId = cartId });
         }
+
 
         //[HttpPost("cart/add")]
         //public async Task<IActionResult> AddToCart(int productId, int quantity)
@@ -146,7 +160,8 @@ namespace GourmetShop.WebApp.Controllers
         }
 
 
-        [HttpPost("cart/place-order")]
+        //[HttpPost("cart/place-order")]
+        [HttpPost]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> PlaceOrder()
         {
@@ -156,7 +171,7 @@ namespace GourmetShop.WebApp.Controllers
             if (success)
             {
                 // Redirect to the "OrderPlaced" view after order is successfully placed
-                return View("OrderPlaced");
+                return View("OrderPlaced" );
             }
             else
             {

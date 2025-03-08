@@ -219,6 +219,37 @@ body {
 
 
 
+.cart-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.cart-items {
+    width: 70%;
+}
+
+.cart-summary {
+    width: 25%;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f8f8f8;
+}
+
+    .cart-summary h4 {
+        font-size: 1.25em;
+        margin-bottom: 15px;
+    }
+
+    .cart-summary p {
+        font-size: 1.1em;
+        margin-bottom: 10px;
+    }
+
+    .cart-summary button {
+        width: 100%;
+        margin-top: 10px;
+    }
 
 
 
@@ -240,3 +271,25 @@ body {
     .shop-now-btn:hover {
         background-color: #5a4b32;
     }*/
+
+.product-font {
+    font-family: "Aboreto", serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #5e3f28;
+}
+.remove{
+    background-color: #A52A2A;
+}
+
+.size{
+    font: 150px;
+}
+
+.order-font {
+    font-family: "Chivo", serif;
+    /*  font-optical-sizing: auto;*/
+    font-weight: 100;
+    font-style: normal;
+    color: #5e3f28;
+}

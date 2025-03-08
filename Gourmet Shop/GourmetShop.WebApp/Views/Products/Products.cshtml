@@ -16,10 +16,10 @@
 @model IEnumerable<Product>
 
 <div class="container mt-4">
-    <h3 class="text-center mb-4">Available Products</h3>
+    <h3 class="text-center mb-4 product-font ">Available Products</h3>
 
     <!-- Subcategory Dropdown -->
-    <select id="subcategory-dropdown">
+    <select id="subcategory-dropdown" style=" margin-bottom: 20px;">
         <option value="">All</option>
         @foreach (Subcategory subcategory in subcategories)
         {
