@@ -10,7 +10,7 @@
         <h1 class="display-3 text-black Gourmet-Header-Font">GourmetShop Products</h1>
         
     <div class="table-responsive overflow-auto border rounded p-3" style="height: 35vh;">
-            <table class="table table-striped table-bordered">
+            <table id="productTable" class="table table-striped table-bordered">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -77,9 +77,14 @@
             <button class="btn btn-dark rounded-pill mt-2 update-product-button" onclick="updateProduct(selectedRowId)">Update Product</button>
 
             <button class="btn btn-dark rounded-pill mt-2" onclick="deleteProduct()">Delete Product</button>
-            <button class="btn btn-dark rounded-pill mt-2" onclick="searchProduct()">Search Product</button>
-
         </div>
+
+        @* <button class="btn btn-dark rounded-pill mt-2" onclick="searchProduct()">Search Product</button> *@
+
+		<div class= mt-3>
+			<input type="text" id="searchInput" class="form-control" placeholder="Search by Product Name" onkeyup="searchTable()" />    
+        </div>
+			
         
         
         
@@ -111,7 +116,7 @@
     }
 
     async function updateProduct(id) {
-          console.log("updateProduct called with id:", id);
+          
       if (!id) {
           alert("No row selected.");
           return;
@@ -154,18 +159,46 @@
       }
     }
 
-    async function deleteProduct(id) {
-        if (!confirm("Are you sure you want to delete this product?")) return;
-
-        let response = await fetch(`/Products/Delete/${id}`, {
-            method: "POST"
-        });
-
-        if (response.ok) {
-            document.getElementById(`row-${id}`).remove();
-            alert("Product deleted successfully!");
-        } else {
-            alert("Failed to delete product.");
+    async function deleteProduct() {
+        if (selectedRowId == null){
+            return;
         }
+        
+        try{
+            let response = await fetch(`/Products/Delete`, {
+            method: "POST",
+            headers:{"Content-Type": "application/x-www-form-urlencoded"},
+            body: `id=${selectedRowId}`
+            });
+
+            if (response.ok) {
+            document.getElementById(`row-${selectedRowId}`).remove();
+            alert("Product deleted");
+            selectedRowId = null;
+            } else {
+             alert("Failed to delete product.");
+            }
+        }catch(error){
+            alert ("Error deleting product: " + error.message );
+        }
+
+       
+        
     }
+
+     function searchTable(){
+            let input = document.getElementById("searchInput").value.toLowerCase();
+            let table = document.getElementById("productTable");
+            let rows = table.getElementsByTagName("tr");
+
+            for (let i = 1; i < rows.length; i++){
+                let productNameInput = rows[i].querySelector("td input[id^= 'name-']");
+
+                if(productNameInput){
+                    let productName = productNameInput.value.toLowerCase();
+                    rows[i].style.display = productName.includes(input) ? "" : "none";
+                    
+                }
+            }
+        }
 </script>
