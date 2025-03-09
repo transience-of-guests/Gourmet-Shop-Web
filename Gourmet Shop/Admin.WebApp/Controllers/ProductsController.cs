@@ -9,7 +9,7 @@ using GourmetShop.DataAccess.Data;
 namespace Admin.WebApp.Controllers
 {
 
-    public class Products : Controller
+    public class ProductsController : Controller
     {
         private readonly IProductRepository _productRepository;
         private readonly GourmetShopDbContext _context;
@@ -18,7 +18,7 @@ namespace Admin.WebApp.Controllers
         //    return View();
         //}
 
-        public Products(IProductRepository productRepository, GourmetShopDbContext context)
+        public ProductsController(IProductRepository productRepository, GourmetShopDbContext context)
         {
             _productRepository = productRepository;
             _context = context;
@@ -78,14 +78,20 @@ namespace Admin.WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete([FromBody] int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var existingProduct = await _productRepository.GetAsync(id);
-            if (existingProduct == null) return NotFound("Product not found.");
+            if (existingProduct == null)
+            {
+                return NotFound("Product not found.");
+            }
+            
 
             await _productRepository.DeleteAsync(id);
             return Ok(new { message = "Product deleted" });
         }
+
+        
 
        
     }
