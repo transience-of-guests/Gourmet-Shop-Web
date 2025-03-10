@@ -37,8 +37,37 @@ namespace Admin.WebApp.Controllers
            
                 await _supplierRepository.AddAsync(supplier);
                 return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public async Task<IActionResult> Update([FromForm] Supplier supplier)
+        {
+            if (supplier == null) return BadRequest("Invalid supplier.");
+            var existingSupplier = await _supplierRepository.GetAsync(supplier.Id);
+            if (existingSupplier == null) return NotFound("Supplier not found.");
             
-            
+            if (!ModelState.IsValid)
+            {
+                return BadRequest($"Model state is invalid" + ModelState);
+            }
+
+            _context.Entry(existingSupplier).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
+
+            await _supplierRepository.UpdateAsync(supplier);
+            return Ok(new { message = "Supplier updated" });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var existingProduct = await _supplierRepository.GetAsync(id);
+            if (existingProduct == null)
+            {
+                return NotFound("Supplier not found.");
+            }
+
+
+            await _supplierRepository.DeleteAsync(id);
+            return Ok(new { message = "Supplier deleted" });
         }
     }
 }
