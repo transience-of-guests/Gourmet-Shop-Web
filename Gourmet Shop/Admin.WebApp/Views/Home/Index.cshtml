@@ -8,7 +8,11 @@
 
         <div class="mt-4">
             <a asp-controller="Admin" asp-action="AdminLogin" class="btn btn-lg btn-light text-dark me-3">Admin Login</a>
-            <a asp-controller="Admin" asp-action="AdminRegister" class="btn btn-lg btn-outline-light text-dark">Admin Register</a>
+            @if (User.Identity.IsAuthenticated){
+                <a asp-controller="Admin" asp-action="AdminRegister" class="btn btn-lg btn-outline-light text-dark">Admin Register</a>
+            }
+						
+           
         </div>
     </div>
 </div>
