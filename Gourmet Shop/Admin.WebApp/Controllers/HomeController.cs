@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Admin.WebApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Admin.WebApp.Controllers
@@ -13,6 +14,7 @@ namespace Admin.WebApp.Controllers
             _logger = logger;
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Index()
         {
             return View();

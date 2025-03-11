@@ -21,8 +21,6 @@ namespace Admin.WebApp.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        
-        
         public IActionResult Dashboard()
         {
             return View();
@@ -57,6 +55,13 @@ namespace Admin.WebApp.Controllers
                 var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
                 if (result.Succeeded)
                 {
+                    if (!_userManager.IsInRoleAsync(user, "Admin").Result)
+                    {
+                        await _signInManager.SignOutAsync();
+                        Console.WriteLine("User is not an Admin");
+                        return RedirectToPage("/Account/Login", new { area = "Identity" });
+                    }
+
                     return RedirectToAction("Dashboard", "Admin");
                 }
             }
