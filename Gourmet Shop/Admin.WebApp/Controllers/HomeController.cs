@@ -14,7 +14,7 @@ namespace Admin.WebApp.Controllers
             _logger = logger;
         }
 
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         public IActionResult Index()
         {
             return View();
