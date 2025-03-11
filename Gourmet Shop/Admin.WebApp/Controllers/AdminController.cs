@@ -29,18 +29,21 @@ namespace Admin.WebApp.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult AdminLogin()
         {
             return RedirectToPage("/Account/Login", new { area = "Identity" });
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult AdminRegister()
         {
             return RedirectToPage("/Account/Register", new { area = "Identity" });
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
@@ -64,6 +67,7 @@ namespace Admin.WebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();

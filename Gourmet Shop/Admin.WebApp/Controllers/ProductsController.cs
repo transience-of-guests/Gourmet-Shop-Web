@@ -5,6 +5,7 @@ using GourmetShop.DataAccess.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GourmetShop.DataAccess.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Admin.WebApp.Controllers
 {
@@ -24,6 +25,7 @@ namespace Admin.WebApp.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var products = await _productRepository.GetAllAsync();
@@ -31,6 +33,7 @@ namespace Admin.WebApp.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public ActionResult AddProduct()
         {
             var suppliers = _context.Suppliers?.ToList() ?? new List<Supplier>();
@@ -42,6 +45,7 @@ namespace Admin.WebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> AddProduct(Product product)
         {
             //bind the supplier object to the product
@@ -64,6 +68,7 @@ namespace Admin.WebApp.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update([FromForm] Product product)
         {
             if (product == null) return BadRequest("Invalid product data.");
@@ -78,6 +83,7 @@ namespace Admin.WebApp.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var existingProduct = await _productRepository.GetAsync(id);

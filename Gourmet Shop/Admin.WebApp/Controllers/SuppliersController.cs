@@ -1,6 +1,7 @@
 ﻿using GourmetShop.DataAccess.Data;
 using GourmetShop.DataAccess.Models;
 using GourmetShop.DataAccess.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -17,6 +18,7 @@ namespace Admin.WebApp.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var suppliers = await _supplierRepository.GetAllAsync();
@@ -24,6 +26,7 @@ namespace Admin.WebApp.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public ActionResult AddSupplier()
         {
             
@@ -32,6 +35,7 @@ namespace Admin.WebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> AddSupplier(Supplier supplier)
         {
            
@@ -39,6 +43,7 @@ namespace Admin.WebApp.Controllers
                 return RedirectToAction("Index");
         }
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update([FromForm] Supplier supplier)
         {
             if (supplier == null) return BadRequest("Invalid supplier.");
@@ -57,6 +62,7 @@ namespace Admin.WebApp.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var existingProduct = await _supplierRepository.GetAsync(id);
