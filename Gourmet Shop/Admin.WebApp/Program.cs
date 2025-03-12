@@ -1,3 +1,4 @@
+using Admin.WebApp.Filters;
 using GourmetShop.DataAccess.Data;
 using GourmetShop.DataAccess.Models;
 using GourmetShop.DataAccess.Repositories;
@@ -17,7 +18,10 @@ namespace Admin.WebApp
             // Add services to the container.
 
             builder.Services.AddRazorPages();
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add(new AdminAuthorizationFilter(builder.Services.BuildServiceProvider().GetRequiredService<SignInManager<Authentication>>()));
+            });
 
             builder.Services.AddDbContext<GourmetShopDbContext>(options => options .UseSqlServer(builder.Configuration
                 .GetConnectionString("DefaultConnection"), x => x.MigrationsAssembly("GourmetShop.DataAccess"))

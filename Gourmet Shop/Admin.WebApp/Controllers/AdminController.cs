@@ -27,7 +27,7 @@ namespace Admin.WebApp.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         public IActionResult AdminLogin()
         {
             return RedirectToPage("/Account/Login", new { area = "Identity" });
