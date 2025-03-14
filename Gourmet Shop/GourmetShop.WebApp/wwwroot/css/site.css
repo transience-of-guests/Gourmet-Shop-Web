@@ -29,3 +29,267 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+.btn-brown {
+    background-color: #5e3f28; /* Brown color */
+    color: #f9f7f4; /* White text */
+    font-family: "Chivo", serif;
+    font-weight: 300;
+}
+
+    .btn-brown:hover {
+        background-color: #423f32; /* Darker brown on hover */
+        color: #f9f7f4;
+    }
+
+.bg-light {
+    background-color: #f1ebe5; /* Light brown color */
+}
+#registerSubmit {
+    border-radius: 30px; /* Adjust the value to make the button more/less rounded */
+}
+
+
+
+.custom-container {
+    margin-top: -50px; /* Adjust this value to fine-tune the spacing */
+}
+
+.font-style {
+    font-family: "Chivo", serif;
+  /*  font-optical-sizing: auto;*/
+    font-weight: 100;
+    font-style: normal;
+}
+
+.Gourmet-Header-Font {
+    font-family: "Aboreto", serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #f9f7f4; /*#423f32;*/
+    /*font-family: "Butterfly Kids", serif;
+    font-weight: 400;
+    font-size: 40px;*/
+    /* font-style: normal;*/
+}
+
+.navbar-brand {
+    padding-top: 30px;  
+}
+
+.custom-link {
+    color: #423f32; /* Change this to your preferred color */
+    text-decoration: none; /* Removes the underline */
+}
+
+    .custom-link:hover {
+        color: #3A382C; /* Slightly darker shade for hover effect */
+        text-decoration: underline; /* Underline on hover for better UX */
+    }
+
+
+.navbar {
+    background-color: #69443c;
+   padding-top: 15px; /* Increase top padding */
+    padding-bottom: 15px; /* Increase bottom padding */
+    min-height: 70px; /* Adjust overall navbar height */
+
+    
+    /* #6c3b11*/
+}
+
+
+/*.cover-container {
+    height: 100vh;*/ /* Full screen height */
+    /*width: 100vw;*/ /* Full screen width */
+    /*background: url('/Icons&IMG/FoodCover.jpg') no-repeat center center/cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.content {
+    background: rgba(0, 0, 0, 0.5);*/ /* Semi-transparent overlay for better text readability */
+    /*padding: 40px;
+    border-radius: 10px;
+}*/
+
+.cover-container {
+    position: fixed; /* Covers the whole viewport */
+    top: 0;
+    left: 0;
+    width: 100vw; /* Full viewport width */
+    height: 100vh; /* Full viewport height */
+    background: url('/Icons&IMG/PastryCover.jpg') no-repeat center center/cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.content {
+    background: rgba(0, 0, 0, 0.5); /* Optional: Dark overlay for readability */
+    padding: 40px;
+    border-radius: 10px;
+    max-width: 90%; /* Ensures content is not too wide on large screens */
+}
+
+.font-color {
+    color: #f9f7f4;
+}
+
+
+
+
+
+
+
+.cart-item-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.product-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    margin-right: 20px;
+}
+
+.product-details {
+    flex: 1;
+}
+
+.quantity-container {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.quantity-btn {
+    background-color: #f1f1f1;
+    border: 1px solid #ddd;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.quantity-input {
+    width: 50px;
+    text-align: center;
+    margin: 0 10px;
+}
+
+.remove-btn {
+    background-color: red;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+}
+
+    .remove-btn i {
+        margin-right: 5px;
+    }
+
+    .remove-btn:hover {
+        background-color: darkred;
+    }
+
+
+
+.Headerstyle {
+    font-family: "Aboreto", serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #5e3f28;
+}
+
+
+
+
+.cart-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.cart-items {
+    width: 70%;
+}
+
+.cart-summary {
+    width: 25%;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f8f8f8;
+}
+
+    .cart-summary h4 {
+        font-size: 1.25em;
+        margin-bottom: 15px;
+    }
+
+    .cart-summary p {
+        font-size: 1.1em;
+        margin-bottom: 10px;
+    }
+
+    .cart-summary button {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+
+
+
+
+
+/*.cover-section {
+    min-height: 100vh;
+    background-color: #f8f5f2;*/ /* Soft cream background */
+    /*padding: 50px 15px;
+}
+
+.shop-now-btn {
+    background-color: #6c5b3c;*/ /* Brown button */
+    /*border: none;
+    padding: 12px 24px;
+}
+
+    .shop-now-btn:hover {
+        background-color: #5a4b32;
+    }*/
+
+.product-font {
+    font-family: "Aboreto", serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #5e3f28;
+}
+.remove{
+    background-color: #A52A2A;
+}
+
+.size{
+    font: 150px;
+}
+
+.order-font {
+    font-family: "Chivo", serif;
+    /*  font-optical-sizing: auto;*/
+    font-weight: 100;
+    font-style: normal;
+    color: #5e3f28;
+}

@@ -1,0 +1,161 @@
+﻿@using GourmetShop.DataAccess.Models
+@model List<ShoppingCartDetail>
+
+
+
+<h3 class="product-font">Your Shopping Cart</h3>
+
+<div class="cart-container">
+    <div class="cart-items">
+        @if (Model.Count == 0)
+        {
+            <p class=" product-font">Your cart is empty.</p>
+        }
+        else
+        {
+            @foreach (var item in Model)
+            {
+                <div class="cart-item-container">
+                    <div class="cart-item">
+                        @* <img src="@item.Product.ImageUrl" alt="@item.Product.ProductName" class="product-image" /> *@
+                        <div class="product-details product-font">
+                            <p><strong>@item.Product.ProductName</strong></p>
+                            <p id="price-@item.ProductId">@item.Price.ToString("C")</p>
+                            <p>Total: <span id="total-@item.ProductId"> @((item.Quantity * item.Price).ToString("C")) </span></p>
+                        </div>
+
+                        <!-- Quantity Up/Down input -->
+                        <div class="quantity-container">
+                            <button class="quantity-btn" onclick="updateQuantity('@item.ProductId', -1)">-</button>
+                            <input type="number" id="quantity-@item.ProductId" value="@item.Quantity" min="1" class="quantity-input" onchange="changeQuantity('@item.ProductId')" />
+                            <button class="quantity-btn" onclick="updateQuantity('@item.ProductId', 1)">+</button>
+                        </div>
+
+                        <!-- Trash can button for removing product -->
+                        <button class="remove-btn remove" onclick="removeFromCart('@item.CartId', '@item.ProductId')">
+                            <i class="fa fa-trash"></i> Remove
+                        </button>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+    <!-- Right Sidebar for Cart Total and Place Order Button -->
+    <div class="cart-summary">
+        <h4 class="product-font ">Cart Summary</h4>
+
+        <p class="product-font size"><strong>Total Cart Amount:</strong> <span id="cart-total">$0.00</span></p>
+
+
+        <!-- Add More to Cart Button -->
+        <a href="@Url.Action("AvailableProducts", "Products")" class="btn btn-secondary">Add More to Cart</a>
+
+        <!-- Place Order Button -->
+        <form asp-action="PlaceOrder" asp-controller="ShoppingCarts" method="post">
+            <button type="submit" class="btn btn-success btn-brown">Place Order</button>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+
+<script>
+   
+        document.addEventListener("DOMContentLoaded", function () {
+        updateCartTotal();  // Call this when the page is fully loaded
+    });
+    // Update quantity (increase or decrease)
+    function updateQuantity(productId, increment) {
+        var quantityInput = document.getElementById('quantity-' + productId);
+        var currentQuantity = parseInt(quantityInput.value);
+        var newQuantity = currentQuantity + increment;
+
+        if (newQuantity >= 1) {
+            quantityInput.value = newQuantity;
+            changeQuantity(productId);
+        }
+    }
+
+    // Handle quantity change when the input field is modified
+
+        function changeQuantity(productId) {
+        var quantityInput = document.getElementById('quantity-' + productId);
+        var newQuantity = parseInt(quantityInput.value);
+
+        if (newQuantity >= 1) {
+            $.get('/cart/get-cart-id')
+                .then(data => {
+                    var cartId = 0;
+                    console.log('Data from get-cart-id:', data);
+                    return cartId = data.cartId;
+                })
+                .then(cartId => {
+                    console.log('Cart ID:', cartId);
+
+                    if (cartId < 1) {
+                        throw new Error('cartId is impossible');
+                    }
+
+                    return $.post('/cart/update', { cartId: cartId, productId: productId, newQuantity: newQuantity });
+                })
+                .then(response => {
+                    console.log('Quantity updated');
+                })
+                .catch(error => {
+                    console.error('Error during quantity update:', error);
+                });
+
+            // Get the price and calculate the total price
+            var pricePerUnit = parseFloat(document.getElementById('price-' + productId).innerText.replace('$', '').trim());
+            console.log('Price per unit:', pricePerUnit);
+            console.log('New quantity:', newQuantity);
+
+            var newTotalPrice = newQuantity * pricePerUnit;
+            console.log('Calculated total price:', newTotalPrice);
+
+            var totalPriceElement = document.getElementById('total-' + productId);
+            totalPriceElement.innerText = '$' + newTotalPrice.toFixed(2);  // Ensure rounding here
+
+            // Optionally update the overall cart total if displayed
+            updateCartTotal();
+        }
+    }
+   
+
+ 
+        function updateCartTotal() {
+        var total = 0;
+        // Log the values for debugging
+        document.querySelectorAll('[id^="total-"]').forEach(function (element) {
+            var itemTotal = parseFloat(element.innerText.replace('$', '').trim());
+            console.log("Item Total: " + itemTotal);  // Check the item total for each product
+            total += itemTotal;  // Add it to the overall total
+        });
+
+        console.log("Total Price Before Update: " + total);  // Log the total before updating
+
+        // Ensure we're rounding the total correctly
+        document.getElementById('cart-total').innerText = '$' + total.toFixed(2); // Show the correct total
+    } 
+
+
+ // Function to remove an item from the cart
+    function removeFromCart(cartId, productId) {
+        if (confirm('Are you sure you want to remove this item from your cart?')) {
+            $.post('/cart/remove', { cartId: cartId, productId: productId })
+                .then(response => {
+                    console.log('Item removed:', response);
+                    location.reload(); // Refresh the page to update the cart
+                })
+                .catch(error => {
+                    console.error('Error removing item:', error);
+                });
+        }
+    }
+</script>
+
+

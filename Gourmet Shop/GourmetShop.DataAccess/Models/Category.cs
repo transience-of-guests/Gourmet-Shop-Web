@@ -9,6 +9,7 @@ namespace GourmetShop.DataAccess.Models;
 [Microsoft.EntityFrameworkCore.Index("Name", Name = "UQ__Categori__737584F65623B0CE", IsUnique = true)]
 public partial class Category
 {
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Key]
     public int Id { get; set; }
 

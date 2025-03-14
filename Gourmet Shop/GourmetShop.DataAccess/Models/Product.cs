@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
 
 namespace GourmetShop.DataAccess.Models;
@@ -37,9 +38,11 @@ public partial class Product
 
     [ForeignKey("SubcategoryId")]
     [InverseProperty("Products")]
+    [ValidateNever]
     public virtual Subcategory? Subcategory { get; set; }
 
     [ForeignKey("SupplierId")]
     [InverseProperty("Products")]
+    [ValidateNever]
     public virtual Supplier Supplier { get; set; } = null!;
 }

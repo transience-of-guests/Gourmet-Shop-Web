@@ -1,0 +1,32 @@
+﻿@using GourmetShop.DataAccess.Models
+@model IEnumerable<Product>
+
+@foreach (var product in Model)
+{
+    <div class="col-md-4 mb-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <!-- Product name in the center -->
+                <h5 class="card-title">@product.ProductName</h5>
+                <p class="card-text">Price: $@product.UnitPrice</p>
+
+                <!-- Add to Cart button below the name -->
+                <form method="post" action="@Url.Action("AddToCart", "ShoppingCarts")">
+                    <input type="hidden" name="productId" value="@product.Id" />
+                    <input type="hidden" name="quantity" value="1" /> <!-- Default quantity to 1 -->
+                    <button type="submit" class="btn btn-brown">Add to Cart</button>
+                </form>
+                @*          <form method="post" action="@Url.Action("AddToCart", "ShoppingCart")">
+                            <input type="hidden" name="productId" value="@product.Id" />
+                            <button type="submit" class="btn btn-brown">Add to Cart</button>
+                        </form> *@
+            </div>
+        </div>
+    </div>
+}
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}

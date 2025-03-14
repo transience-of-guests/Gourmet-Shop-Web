@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GourmetShop.DataAccess.Repositories.Interfaces.CRUD_Subinterfaces
+namespace GourmetShop.DataAccess.Repositories
 {
     public  interface ICrudOperations<T> where T : class
     {

@@ -1,0 +1,204 @@
+﻿@model IEnumerable<GourmetShop.DataAccess.Models.Product>
+
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="cover-container d-flex align-items-center justify-content-center text-center">
+    <div class="content">
+        <h1 class="display-3 text-black Gourmet-Header-Font">GourmetShop Products</h1>
+        
+    <div class="table-responsive overflow-auto border rounded p-3" style="height: 35vh;">
+            <table id="productTable" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Product Name</th>
+                        <th>Subcategory</th>
+                        <th>Supplier</th>
+                        <th>Unit Price</th>
+                        <th>Package</th>
+                        <th>Is Discontinued</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var product in Model)
+                    {
+                        <tr id="row-@product.Id" onclick="selectRow(@product.Id)">
+                            <td>@product.Id</td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm" 
+                                id="name-@product.Id" 
+                                value="@product.ProductName" 
+                                maxlength="50" required />
+                            </td>
+                            <td>@product.Subcategory.Name
+                                <input type="hidden" id="subcategory-@product.Id" value="@product.SubcategoryId" />
+                            </td>
+                            <td>@product.Supplier.CompanyName
+                                <input type="hidden" id="supplier-@product.Id" value="@product.SupplierId" />
+                            </td>
+                            <td>
+                                <input type="number" 
+                                    class="form-control form-control-sm"
+                                    value="@product.UnitPrice?.ToString("F2")"
+                                    step="0.01"
+                                    id="price-@product.Id" />
+                            </td>
+                            <td>
+                                <input type="text" 
+                                    class="form-control form-control-sm" 
+                                    id="package-@product.Id"
+                                    value="@(!string.IsNullOrEmpty(product.Package) ? product.Package : "")"
+                                    maxlength="30"/>
+                            </td>
+                            <td class="text-center">
+                                <input type ="checkbox" id="isDiscontinued-@product.Id"
+                                @(product.IsDiscontinued ? "checked": "")/>
+                            </td>
+                           
+
+                        </tr>
+                    }
+
+                    
+                </tbody>
+               
+            </table>
+            
+    </div>
+        <div class = mt-3>
+            <button class="btn btn-dark rounded-pill mt-2" onclick="window.location.href='@Url.Action("AddProduct", "Products")'">
+                Add Product
+            </button>
+
+            <button class="btn btn-dark rounded-pill mt-2 update-product-button" onclick="updateProduct(selectedRowId)">Update Product</button>
+
+            <button class="btn btn-dark rounded-pill mt-2" onclick="deleteProduct()">Delete Product</button>
+        </div>
+
+        @* <button class="btn btn-dark rounded-pill mt-2" onclick="searchProduct()">Search Product</button> *@
+
+		<div class= mt-3>
+			<input type="text" id="searchInput" class="form-control" placeholder="Search by Product Name" onkeyup="searchTable()" />    
+        </div>
+			
+        
+        
+        
+        <div id="updateMessage" class="alert" style="display:none;"></div>
+    
+        
+</div>
+</div>
+
+<script>
+
+    function showMessage(message, alertClass) {
+        const messageDiv = document.getElementById("updateMessage");
+        messageDiv.textContent = message;
+        messageDiv.className = `alert ${alertClass}`;
+        messageDiv.style.display = "block";
+        setTimeout(() => {
+            messageDiv.style.display = "none";
+        }, 3000);
+    }
+
+    let selectedRowId = null;
+
+    function selectRow(id) {
+        selectedRowId = id;
+        document.querySelectorAll("tr").forEach(row => row.classList.remove("table-primary"));
+        document.getElementById(`row-${id}`).classList.add("table-primary");
+        console.log("Row selected, id:", id);
+    }
+
+    async function updateProduct(id) {
+          
+      if (!id) {
+          alert("No row selected.");
+          return;
+      }
+
+      let productData = new FormData();
+      productData.append("Id", id);
+      productData.append("ProductName", document.getElementById(`name-${id}`).value);
+      productData.append("UnitPrice", document.getElementById(`price-${id}`).value);
+      productData.append("Package", document.getElementById(`package-${id}`).value);
+      productData.append("IsDiscontinued", document.getElementById(`isDiscontinued-${id}`).checked);
+
+      
+      let supplierElem = document.getElementById(`supplier-${id}`);
+      let subcategoryElem = document.getElementById(`subcategory-${id}`);
+      if (supplierElem && subcategoryElem) {
+          productData.append("SupplierId", supplierElem.value);
+          productData.append("SubcategoryId", subcategoryElem.value);
+      } else {
+          console.error("Supplier and/or Subcategory not found for product:", id);
+      }
+
+      try {
+          let response = await fetch(`/Products/Update`, {
+              method: "POST",
+              body: productData
+          });
+          
+          if (response.ok) {
+              showMessage("Product updated!");
+			  setTimeout(() => {
+				  window.location.reload();
+			  }, 1500);
+          } else {
+              showMessage("No updates made. Status: " + response.status);
+          }
+      } catch (error) {
+          
+          showMessage("Error updating product: " + error.message);
+      }
+    }
+
+    async function deleteProduct() {
+        if (selectedRowId == null){
+            return;
+        }
+        
+        try{
+            let response = await fetch(`/Products/Delete`, {
+            method: "POST",
+            headers:{"Content-Type": "application/x-www-form-urlencoded"},
+            body: `id=${selectedRowId}`
+            });
+
+            if (response.ok) {
+            document.getElementById(`row-${selectedRowId}`).remove();
+            alert("Product deleted");
+            selectedRowId = null;
+            } else {
+             alert("Failed to delete product.");
+            }
+        }catch(error){
+            alert ("Error deleting product: " + error.message );
+        }
+
+       
+        
+    }
+
+     function searchTable(){
+            let input = document.getElementById("searchInput").value.toLowerCase();
+            let table = document.getElementById("productTable");
+            let rows = table.getElementsByTagName("tr");
+
+            for (let i = 1; i < rows.length; i++){
+                let productNameInput = rows[i].querySelector("td input[id^= 'name-']");
+
+                if(productNameInput){
+                    let productName = productNameInput.value.toLowerCase();
+                    rows[i].style.display = productName.includes(input) ? "" : "none";
+                    
+                }
+            }
+        }
+</script>

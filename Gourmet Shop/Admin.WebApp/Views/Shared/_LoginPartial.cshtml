@@ -1,0 +1,27 @@
+﻿@using GourmetShop.DataAccess.Models
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<Authentication> SignInManager
+@inject UserManager<Authentication> UserManager
+
+<ul class="navbar-nav">
+@if (SignInManager.IsSignedIn(User))
+{
+        <li class="nav-item">
+            <a id="manage" class="nav-link font-color" asp-area="Identity" asp-page="/Products/AvailableProducts" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+        </li>
+        <li class="nav-item font-style">
+            <a class="nav-link font-color" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        </li>
+        <li class="nav-item">
+            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout">
+                <button id="logout" type="submit" class="nav-link btn btn-link font-color border-0">Logout</button>
+            </form>
+        </li>
+}
+else
+{
+        <li class="nav-item font-style">
+            <a class="nav-link font-color" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+}
+</ul>

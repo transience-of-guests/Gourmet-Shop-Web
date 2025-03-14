@@ -9,17 +9,18 @@ namespace GourmetShop.DataAccess.Models;
 [Table("ShoppingCart")]
 public partial class ShoppingCart
 {
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Key]
     public int Id { get; set; }
 
-    public int CustomerId { get; set; }
+    public int UserId { get; set; }
 
     [Column(TypeName = "datetime")]
     public DateTime CreatedDate { get; set; }
 
-    [ForeignKey("CustomerId")]
+    [ForeignKey("UserId")]
     [InverseProperty("ShoppingCarts")]
-    public virtual Customer Customer { get; set; } = null!;
+    public virtual UserInfo UserInfo { get; set; } = null!;
 
     [InverseProperty("Cart")]
     public virtual ICollection<ShoppingCartDetail> ShoppingCartDetails { get; set; } = new List<ShoppingCartDetail>();

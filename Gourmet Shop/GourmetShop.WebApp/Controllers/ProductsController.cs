@@ -14,16 +14,19 @@ namespace GourmetShop.WebApp.Controllers
     public class ProductsController : Controller
     {
         private readonly IProductRepository _productRepository;
+        private readonly ISubCategoryRepository _subcategoryRepository;
 
-        public ProductsController(IProductRepository productRepository)
+
+        public ProductsController(IProductRepository productRepository, ISubCategoryRepository subcategoryRepository)
         {
             _productRepository = productRepository;
+            _subcategoryRepository = subcategoryRepository;
         }
 
         public async Task<IActionResult> Index()
         {
-            var books = await _productRepository.GetAllAsync();
-            return View(books);
+            var products = await _productRepository.GetAllAsync();
+            return View(products);
         }
 
         public async Task<IActionResult> Details(int id)
@@ -120,5 +123,70 @@ namespace GourmetShop.WebApp.Controllers
             await _productRepository.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
+
+        //Added Check Me
+        //public async Task<IActionResult> AvailableProducts()
+        //{
+        //    var products = await _productRepository.GetAvailableProductsForCust();
+        //    return View(products);
+        //}
+
+        public async Task<IActionResult> AvailableProducts()
+        {
+
+            // Hardcoded products for testing purposes
+
+            // This is to make sure that we can set the selected subcategory in the dropdown at all times
+            // ViewData["SelectedSubcategoryId"] = subcategoryId?.ToString() ?? "";
+
+
+            var subcategories = await _subcategoryRepository.GetAllAsync();
+            ViewData["Subcategories"] = subcategories;
+
+            // Get available products, filtered by subcategory if provided
+            List<Product> products =  (await _productRepository.GetAvailableProductsForCust()).ToList();  // Or get all available products if no filter is applied
+
+            return View("Products", products);
+        }
+
+        public async Task<IActionResult> AvailableProductsBySubcategory(int? subcategoryId)
+        {
+
+            List<Product> products = subcategoryId.HasValue
+                ? (await _subcategoryRepository.GetProductsBySubcategoryAsync(subcategoryId.Value)).ToList()
+                : (await _productRepository.GetAvailableProductsForCust()).ToList();  // Or get all available products if no filter is applied
+            return PartialView("_ProductsList", products);
+        }
+
+        //    public async Task<IActionResult> AvailableProducts(int? subcategoryId)
+        //    {
+        //        // Hardcoded products for testing purposes
+        //        var hardcodedProducts = new List<Product>
+        //{
+        //    new Product { Id = 1, ProductName = "Product 1", UnitPrice = 10.99m, IsDiscontinued = false, Subcategory = new Subcategory { Name = "Subcategory 1" } },
+        //    new Product { Id = 2, ProductName = "Product 2", UnitPrice = 12.99m, IsDiscontinued = false, Subcategory = new Subcategory { Name = "Subcategory 2" } },
+        //    new Product { Id = 3, ProductName = "Product 3", UnitPrice = 14.99m, IsDiscontinued = false, Subcategory = new Subcategory { Name = "Subcategory 3" } }
+        //};
+
+        //        var hardcodedSubcategories = new List<Subcategory>
+        //{
+        //    new Subcategory { Id = 1, Name = "Subcategory 1"},
+        //    new Subcategory { Id = 2, Name = "Subcategory 2" },
+        //    new Subcategory { Id = 3, Name = "Subcategory 3"  }
+        //};
+
+        //        // Get all subcategories for filtering (hardcoded data)
+        //        ViewData["Subcategories"] = hardcodedSubcategories;
+
+        //        // Get all subcategories for filtering
+        //        var subcategories = await _subcategoryRepository.GetAllAsync();
+        //        //ViewData["Subcategories"] = subcategories;
+
+        //        // Set the hardcoded products in ViewData
+        //        ViewData["Products"] = hardcodedProducts;
+
+        //        return View("Products");
+        //    }
+
     }
 }

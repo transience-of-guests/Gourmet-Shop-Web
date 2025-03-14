@@ -10,6 +10,7 @@ namespace GourmetShop.DataAccess.Models;
 [Microsoft.EntityFrameworkCore.Index("RoleName", Name = "UQ__Role__8A2B6160384E3530", IsUnique = true)]
 public partial class Role
 {
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Key]
     public int Id { get; set; }
 
@@ -17,5 +18,5 @@ public partial class Role
     public string? RoleName { get; set; }
 
     [InverseProperty("Role")]
-    public virtual ICollection<User> Users { get; set; } = new List<User>();
+    public virtual ICollection<UserInfo> Users { get; set; } = new List<UserInfo>();
 }
